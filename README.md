@@ -1,2 +1,2 @@
 # SPI
-Software and system design project
+Software and System Design project
