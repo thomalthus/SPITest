@@ -2,7 +2,7 @@
 # For CSC3004 Software Development
 
 # Put your user name below:
-USER= skon
+USER= stantont
 
 CC= g++
 
@@ -28,7 +28,7 @@ TestPhoneBook: TestPhoneBook.o PhoneBook.o PhoneEntry.o
 	$(CC) TestPhoneBook.o PhoneBook.o PhoneEntry.o -L/usr/lib -o TestPhoneBook -L/usr/local/lib -lcgicc -lmysqlcppconn
 
 phoneApp.o: phoneApp.cpp 
-	$(CC) -c $(CFLAGS) PhoneApp.cpp
+	$(CC) -c $(CFLAGS) phoneApp.cpp
 
 phoneApp: phoneApp.o PhoneBook.o PhoneEntry.o
 	$(CC) phoneApp.o PhoneBook.o PhoneEntry.o -o phoneApp -L/usr/local/lib -lcgicc -lmysqlcppconn

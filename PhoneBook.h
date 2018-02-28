@@ -19,9 +19,9 @@
 #define PHONEBOOK_H
 
 #define HOST "localhost"
-#define USER "skon"
-#define DB "PhoneAppDB"
-#define PASS "PhilanderChase"
+#define USER "stantont"
+#define DB "stantont"
+#define PASS "S215259"
 
 using namespace std;
 

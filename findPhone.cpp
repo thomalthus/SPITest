@@ -16,8 +16,8 @@
 #include <cppconn/prepared_statement.h>
 
 #define HOST "localhost"
-#define USER "skon"
-#define DB "PhoneAppDB"
+#define USER "stantont"
+#define DB "stantont"
 
 using namespace std;
 //using namespace sql::mysql;
