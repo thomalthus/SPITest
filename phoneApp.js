@@ -40,16 +40,17 @@ function changeOperation(operation){
 // Build output table from comma delimited list
 function buildTable(list) {
     var a = list.split(",");
+    
     if (a.length < 1) {
 	return "<h3>Internal Error</h3>";
     } else if (a.length == 1) {
-	return "<h3>Nothing Found</h3>";
+	return "<h3>No Item Found</h3>";
     } else {
-	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>First</th><th>Last</th><th>Phone</th><th>Type</th><th>Action</th><tr>';
+ 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Object</th><th>Module</th><th>Stock</th><th>Type</th><th>Action</th><tr>';
 	var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
 	    result += "<tr><td class='first'>"+a[i]+"</td><td class='last'>"+a[i+1]+"</td><td class='phone'>"+a[i+2]+"</td><td class='type'>"+a[i+3]+"</td>";
-	    result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm edit'>Edit</button> ";
+	    result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm edit'>Change</button> ";
 	    result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm delete'>Delete</button></td></tr>";
 	}
 	result += "</table>";
@@ -108,7 +109,7 @@ function processResults(results) {
     $('#searchresults').append(buildTable(results));
     $(".edit").click(processEdit);
     $(".delete").click(processDelete);
-    $('#addmessage').text($('#addfirst').val()+" "+$('#addlast').val()+ " ADDED");
+    $('#addmessage').text($('#addfirst').val()+" "+$('#addlast').val()+ " ADDED to Database");
     
 }
 
