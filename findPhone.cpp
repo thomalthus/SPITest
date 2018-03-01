@@ -17,7 +17,7 @@
 
 #define HOST "localhost"
 #define USER "stantont"
-#define DB "stantont"
+#define DB "SPI"
 
 using namespace std;
 //using namespace sql::mysql;

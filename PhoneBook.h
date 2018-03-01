@@ -20,7 +20,7 @@
 
 #define HOST "localhost"
 #define USER "stantont"
-#define DB "stantont"
+#define DB "SPI"
 #define PASS "S215259"
 
 using namespace std;

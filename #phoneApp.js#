@@ -94,7 +94,7 @@ function processDelete(){
     $('#searchresults').empty();
     var id=$(this).attr('ID');
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteid='+$(this).attr('D+'&operation=delete',
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=delete',
 	dataType: 'text',
 	success: function(){alert("Deleted Record: " +id );},
 	error: function(){alert("Error: Something went wrong");}
@@ -136,8 +136,7 @@ function addEntry(){
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong");}
-    });
-}
+    })}
     
 
     
