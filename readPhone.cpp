@@ -16,8 +16,8 @@
 #include <cppconn/prepared_statement.h>
 
 #define HOST "localhost"
-#define USER "skon"
-#define DB "skon"
+#define USER "stantont"
+#define DB "SPI"
 
 using namespace std;
 //using namespace sql::mysql;
@@ -46,10 +46,10 @@ int main()
     do {
       res.reset(stmt->getResultSet());
       while (res->next()) {
-	cout << res->getString("First") << " "
-	     << res->getString("Last") << " "
-	     << res->getString("Phone") << " "
-	     << res->getString("Type")
+	cout << res->getString("name") << " "
+	     << res->getString("description") << " "
+	     << res->getString("stock") << " "
+	     << res->getString("module")
 	     << endl;
       }
     } while (stmt->getMoreResults());
