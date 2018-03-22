@@ -16,7 +16,7 @@
 using namespace std;
 using namespace cgicc; // Needed for AJAX functions.
 
-ofstream logfile; 
+ofstream log; 
 
 int main() {
   Cgicc cgi;    // Ajax object
@@ -28,66 +28,60 @@ int main() {
   // Create AJAX objects to recieve information from web page.
   form_iterator op = cgi.getElement("operation");
   string operation = **op;
-  logfile.open("stantontphone.log",ios::out | ios::app);
-  logfile << "Op:" << operation << endl;
-  logfile.close();
+  log.open("stantontp.log",ios::out | ios::app);
+  log << "Op:" << operation << endl;
+  log.close();
   string output = "Error =- Operation not support yet!";
-
-  if (operation == "Find description") {
+  if (operation == "Find Last") {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
-    pbResults = pb.findByDescription(search);
+    pbResults = pb.findByLast(search);
     if (pbResults.size() > 0) {
       output = "success";
       for (int i = 0; i<pbResults.size(); i++) {
-	output += "," + pbResults.at(i).name + ","
-	  + pbResults.at(i).description + ","
-	  + pbResults.at(i).stock + ","
-	  + pbResults.at(i).module + ","
-	  + pbResults.at(i).artifactID;
-
+	output += "," + pbResults.at(i).first + ","
+	  + pbResults.at(i).last + ","
+	  + pbResults.at(i).phone + ","
+	  + pbResults.at(i).type + ","
+	  + pbResults.at(i).ID;
       }
     } else {
       output = "No Match Found";
     }
   }
 
-
-  if (operation == "Find name") {
+  if (operation == "Find First") {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
-    pbResults = pb.findByName(search);
+    pbResults = pb.findByFirst(search);
     if (pbResults.size() > 0) {
       output = "success";
       for (int i = 0; i<pbResults.size(); i++) {
-	output += "," + pbResults.at(i).name + ","
-	  + pbResults.at(i).description + ","
-	  + pbResults.at(i).stock + ","
-	  + pbResults.at(i).module+ ","
-	  + pbResults.at(i).artifactID;
-
+	output += "," + pbResults.at(i).first + ","
+	  + pbResults.at(i).last + ","
+	  + pbResults.at(i).phone + ","
+	  + pbResults.at(i).type + ","
+	  + pbResults.at(i).ID;
       }
     } else {
       output = "No Match Found";
     }
   }
-
-  if (operation == "Find module") {
+  if (operation == "Find Type") {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
-    pbResults = pb.findByModule(search);
+    pbResults = pb.findByType(search);
     if (pbResults.size() > 0) {
       output = "success";
       for (int i = 0; i<pbResults.size(); i++) {
-	output += "," + pbResults.at(i).name + ","
-	  + pbResults.at(i).description + ","
-	  + pbResults.at(i).stock + ","
-	  + pbResults.at(i).module + ","
-	  + pbResults.at(i).artifactID;
-
+	output += "," + pbResults.at(i).first + ","
+	  + pbResults.at(i).last + ","
+	  + pbResults.at(i).phone + ","
+	  + pbResults.at(i).type + ","
+	  + pbResults.at(i).ID;
       }
     } else {
       output = "No Match Found";
@@ -95,19 +89,17 @@ int main() {
   }
 
   if(operation=="Add Entry"){
+    form_iterator afnameString = cgi.getElement("afname");
+    form_iterator alnameString = cgi.getElement("alname");
+    form_iterator addphoneString = cgi.getElement("aphone");
+    form_iterator addtypeString = cgi.getElement("atype");
 
-    form_iterator anameString = cgi.getElement("aname");
-    form_iterator adescripString = cgi.getElement("adescrip");
-    form_iterator addstockString = cgi.getElement("astock");
-    form_iterator addmoduleString = cgi.getElement("amodule");
+    string addfname=**afnameString;
+    string addlname=**alnameString;
+    string addphone=**addphoneString;
+    string addtype=**addtypeString;
 
-    string addname=**anameString;
-    string adddescrip=**adescripString;
-    string addstock=**addstockString;
-    string addmodule=**addmoduleString;
-
-    pb.addEntry(addname,adddescrip,addstock,addmodule);
-
+    pb.addEntry(addfname,addlname,addphone,addtype);
     output="success";
   }
   
@@ -122,22 +114,20 @@ int main() {
     form_iterator idtoeditString = cgi.getElement("editid");
     string idedit=**idtoeditString;
 
-    form_iterator editnameString = cgi.getElement("editname");
-    form_iterator editdescripString = cgi.getElement("editdescrip");
-    form_iterator editstockString = cgi.getElement("editstock");
-    form_iterator editmoduleString = cgi.getElement("editmodule");
+    form_iterator editfnameString = cgi.getElement("editfname");
+    form_iterator editlnameString = cgi.getElement("editlname");
+    form_iterator editphoneString = cgi.getElement("editphone");
+    form_iterator edittypeString = cgi.getElement("edittype");
 
-    string editname=**editnameString;
-    string editdescrip=**editdescripString;
-    string editstock=**editstockString;
-    string editmodule=**editmoduleString;
+    string editfname=**editfnameString;
+    string editlname=**editlnameString;
+    string editphone=**editphoneString;
+    string edittype=**edittypeString;
 
 
-    pb.editEntry(idedit,editname,editdescrip,editstock,editmodule);
+    pb.editEntry(idedit,editfname,editlname,editphone,edittype);
     output="success";
   }
-  //didnt change "editid" or anthing similar to "editartifactid" because i dont think it matters
-
   
   /* send back the results */
   cout << "Content-Type: text/plain\n\n";

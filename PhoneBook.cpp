@@ -6,21 +6,27 @@
 PhoneBook::PhoneBook() {
 
 }
+
   vector<PhoneEntry> PhoneBook::findByDescription(string description) {
+
     sql::Driver* driver = sql::mysql::get_driver_instance();
     std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
     con->setSchema(database);
     std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
     vector<PhoneEntry> list;
+
     stmt->execute("CALL find_description('%"+description+"%')");
+
     std::auto_ptr< sql::ResultSet > res;
     do {
       res.reset(stmt->getResultSet());
       while (res->next()) {
+
           PhoneEntry entry(res->getString("name"),res->getString("description"),
-			   res->getString("Phone"),res->getString("module"),
+			   res->getString("stock"),res->getString("module"),
 	    res->getString("artifactID"));
+
 	  
 	  list.push_back(entry);
 
@@ -31,20 +37,25 @@ PhoneBook::PhoneBook() {
 }
 
 vector<PhoneEntry> PhoneBook::findByName(string name) {
+
   sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
   vector<PhoneEntry> list;
+
   stmt->execute("CALL find_name('%"+name+"%')");
+
   std::auto_ptr< sql::ResultSet > res;
   do {
     res.reset(stmt->getResultSet());
     while (res->next()) {
+
       PhoneEntry entry(res->getString("name"),res->getString("description"),
-		       res->getString("Phone"),res->getString("module"),
+		       res->getString("stock"),res->getString("module"),
 	res->getString("artifactID"));
+
         list.push_back(entry);
 
     }
@@ -53,20 +64,26 @@ vector<PhoneEntry> PhoneBook::findByName(string name) {
 
 }
 vector<PhoneEntry> PhoneBook::findByModule(string module) {
+
   sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
   vector<PhoneEntry> list;
+
   stmt->execute("CALL find_module('"+module+"')");
+
   std::auto_ptr< sql::ResultSet > res;
   do {
     res.reset(stmt->getResultSet());
     while (res->next()) {
+
       PhoneEntry entry(res->getString("name"),res->getString("description"),
-		       res->getString("Phone"),res->getString("module"),
+		       res->getString("stock"),res->getString("module"),
 	res->getString("artifactID"));
+
+
       list.push_back(entry);
 
     }
@@ -76,10 +93,12 @@ vector<PhoneEntry> PhoneBook::findByModule(string module) {
 }
 
 void PhoneBook::addEntry(string name,string description,string stock, string module){
+
   sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
+
   if(module != "Friend" && module != "Family" && module!="Business"){
       module="Other";
   }
@@ -88,10 +107,12 @@ void PhoneBook::addEntry(string name,string description,string stock, string mod
 
 
 void PhoneBook::editEntry(string artifactIDnum,string name,string description,string stock, string module){
+
   sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
+
   if(module != "Friend" && module != "Family" && module!="Business"){
     module="Other";
   }
@@ -100,10 +121,13 @@ void PhoneBook::editEntry(string artifactIDnum,string name,string description,st
 
 
 void PhoneBook::deleteEntry(string artifactIDnum){
+
   sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
+
   stmt->execute("CALL delete_entry('"+artifactIDnum+"')");
+
 }

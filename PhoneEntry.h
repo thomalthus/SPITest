@@ -7,6 +7,7 @@ using namespace std;
 class PhoneEntry {
 public:
      PhoneEntry();
+
      PhoneEntry(string n, string d, string s, string m, string I);
      string name;
      string description;

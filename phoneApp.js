@@ -1,3 +1,4 @@
+
 // JavaScript for Phone Application Demo Program
 // Jim Skon, Kenyon College, 2017
 var operation;  // operation
@@ -40,16 +41,17 @@ function changeOperation(operation){
 // Build output table from comma delimited list
 function buildTable(list) {
     var a = list.split(",");
+    
     if (a.length < 1) {
 	return "<h3>Internal Error</h3>";
     } else if (a.length == 1) {
-	return "<h3>Nothing Found</h3>";
+	return "<h3>No Item Found</h3>";
     } else {
-	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>First</th><th>Last</th><th>Phone</th><th>Type</th><th>Action</th><tr>';
+ 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Object</th><th>Module</th><th>Stock</th><th>Type</th><th>Action</th><tr>';
 	var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
 	    result += "<tr><td class='first'>"+a[i]+"</td><td class='last'>"+a[i+1]+"</td><td class='phone'>"+a[i+2]+"</td><td class='type'>"+a[i+3]+"</td>";
-	    result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm edit'>Edit</button> ";
+	    result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm edit'>Change</button> ";
 	    result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm delete'>Delete</button></td></tr>";
 	}
 	result += "</table>";
@@ -81,7 +83,7 @@ function editEntry(){
     console.log("Firstname:" + $('#editfirst').val() + "ID:" + editid);
     $('#searchresults').empty();
     $.ajax({
-	url: '/cgi-bin/skon_phoneAppComplete.cgi?editid='+editid +'&editfname='+$('#editfirst').val()+'&editlname='+$('#editlast').val()+'&editphone='+$('#editphone').val()+'&edittype='+$('#edittype').val()+'&operation=edit',
+	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?editid='+editid +'&editfname='+$('#editfirst').val()+'&editlname='+$('#editlast').val()+'&editphone='+$('#editphone').val()+'&edittype='+$('#edittype').val()+'&operation=edit',
 	dataType: 'text',
 	success: editDone(),
 	error: function(){alert("Error: Something went wrong");}
@@ -94,7 +96,7 @@ function processDelete(){
     $('#searchresults').empty();
     var id=$(this).attr('ID');
     $.ajax({
-	url: '/cgi-bin/skon_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=delete',
+	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=delete',
 	dataType: 'text',
 	success: function(){alert("Deleted Record: " +id );},
 	error: function(){alert("Error: Something went wrong");}
@@ -108,7 +110,7 @@ function processResults(results) {
     $('#searchresults').append(buildTable(results));
     $(".edit").click(processEdit);
     $(".delete").click(processDelete);
-    $('#addmessage').text($('#addfirst').val()+" "+$('#addlast').val()+ " ADDED");
+    $('#addmessage').text($('#addfirst').val()+" "+$('#addlast').val()+ " ADDED to Database");
     
 }
 
@@ -120,7 +122,7 @@ function getMatches(){
     $('.editdata').hide();
     $('#searchresults').empty();
     $.ajax({
-	url: '/cgi-bin/skon_phoneAppComplete.cgi?find='+$('#search').val()+'&operation='+operation,
+	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?find='+$('#search').val()+'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong");}
@@ -132,7 +134,7 @@ function addEntry(){
     console.log("Firstname:" + $('#addfirst').val());
     $('#searchresults').empty();
     $.ajax({
-	url: '/cgi-bin/skon_phoneAppComplete.cgi?afname='+$('#addfirst').val()+'&alname='+$('#addlast').val()+'&aphone='+$('#addphone').val()+'&atype='+$('#addtype').val()+'&operation='+operation,
+	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?afname='+$('#addfirst').val()+'&alname='+$('#addlast').val()+'&aphone='+$('#addphone').val()+'&atype='+$('#addtype').val()+'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong");}
@@ -140,4 +142,3 @@ function addEntry(){
 }
     
 
-    

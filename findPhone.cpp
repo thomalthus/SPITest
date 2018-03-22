@@ -16,8 +16,10 @@
 #include <cppconn/prepared_statement.h>
 
 #define HOST "localhost"
-#define USER "skon"
-#define DB "PhoneAppDB"
+
+#define USER "stantont"
+#define DB "SPI"
+
 
 using namespace std;
 //using namespace sql::mysql;
@@ -34,9 +36,9 @@ int main()
   cin >> pass;
   cout << endl;
   cin.ignore(100,'\n');
-  cout << "Enter last name to find:";
-  string lastMatch;
-  cin >> lastMatch;
+  cout << "Enter name to find:";
+  string nameMatch;
+  cin >> nameMatch;
   try {
 
     sql::Driver* driver = sql::mysql::get_driver_instance();
@@ -44,15 +46,15 @@ int main()
     con->setSchema(database);
     std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
-    stmt->execute("CALL find_last('%"+lastMatch+"%')");
+    stmt->execute("CALL find_name('%"+nameMatch+"%')");
     std::auto_ptr< sql::ResultSet > res;
     do {
       res.reset(stmt->getResultSet());
       while (res->next()) {
-	cout << res->getString("First") << " "
-	     << res->getString("Last") << " "
-	     << res->getString("Phone") << " "
-	     << res->getString("Type")
+	cout << res->getString("name") << " "
+	     << res->getString("description") << " "
+	     << res->getString("stock") << " "
+	     << res->getString("module")
 	     << endl;
       }
     } while (stmt->getMoreResults());
