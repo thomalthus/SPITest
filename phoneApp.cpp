@@ -54,27 +54,33 @@ int main() {
   }
 
 
-  if (operation == "Find name") {
-    form_iterator searchString = cgi.getElement("find");
+  if (operation == "Find Artifact") {
+
+	
+	form_iterator searchString = cgi.getElement("find");
+   
     string search = **searchString;
     
     pbResults = pb.findByName(search);
-    if (pbResults.size() > 0) {
+    
+	if (pbResults.size() > 0) {
+		
       output = "success";
+	  
       for (int i = 0; i<pbResults.size(); i++) {
-	output += "," + pbResults.at(i).name + ","
-	  + pbResults.at(i).description + ","
-	  + pbResults.at(i).stock + ","
-	  + pbResults.at(i).module+ ","
-	  + pbResults.at(i).artifactID;
+	output += "~@$" + pbResults.at(i).name + "~@$"
+	  + pbResults.at(i).description + "~@$"
+	  + pbResults.at(i).stock + "~@$"
+	  + pbResults.at(i).module + "~@$" + pbResults.at(i).artifactID;
 
       }
     } else {
       output = "No Match Found";
     }
+	
   }
 
-  if (operation == "Find module") {
+  if (operation == "Find Module") {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     

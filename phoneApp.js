@@ -6,9 +6,11 @@ var editid;
 //Edited this section :)
 $(document).ready(function () {
     $('.editdata').hide();
+	$('.inputmodule').hide();
+	$('.inputartifact').hide();
     $("#search-btn").click(getMatches);
     $("#add-btn").click(addEntry);
-    operation = "Find Last";
+    operation = "Find Artifact";
     $("#clear").click(clearResults);
 
     $(".dropdown-menu li a").click(function(){
@@ -24,34 +26,59 @@ $(document).ready(function () {
 changeOperation(operation);
 
 function changeOperation(operation){
-    if(operation=="Add Entry"){
-	$('#addmessage').empty();
-	$('.inputdata').show();
-	$('.searchbox').show();
-	$('.results').hide();
-	$('.editdata').hide();}
+    /*
+	if(operation=="Add Entry"){
+		$('#addmessage').empty();
+		$('.inputdata').show();
+		$('.searchbox').show();
+		$('.results').hide();
+		$('.editdata').hide();
+		$('.inputmodule').hide();
+	}
+	*/
+	if(operation=="Find Artifact"){
+		$('.inputmodule').hide();
+		$('.inputartifact').hide();
+	}
+	else if(operation=="Find Module"){
+		$('.inputmodule').hide();
+		$('.inputartifact').hide();
+	}
+	else if(operation=="Find Project"){
+		$('.inputmodule').hide();
+		$('.inputartifact').hide();
+	}
+	else if(operation=="Add Artifact"){
+		$('.inputartifact').show();
+		
+		$('.inputmodule').hide();
+	}	
     else if(operation == "Add Module"){
-        $('.inputdata').show();
-
+        $('.inputmodule').show();
+		
+		$('.inputartifact').hide();
     }
+	else if(operation=="Add Project"){
+	
+	}
     else{
-	$('.editdata').hide();
-	$('.inputdata').hide();
-	$('.results').show();
-	$('.searchbox').show();
+		$('.editdata').hide();
+		$('.inputdata').hide();
+		$('.results').show();
+		$('.searchbox').show();
     }    
 }
 
 // Build output table from comma delimited list
 function buildTable(list) {
-    var a = list.split(",");
+    var a = list.split("~@$");
     
     if (a.length < 1) {
 	return "<h3>Internal Error</h3>";
     } else if (a.length == 1) {
 	return "<h3>No Item Found</h3>";
     } else {
- 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Object</th><th>Module</th><th>Stock</th><th>Type</th><th>Action</th><tr>';
+ 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
 	var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
 	    result += "<tr><td class='first'>"+a[i]+"</td><td class='last'>"+a[i+1]+"</td><td class='phone'>"+a[i+2]+"</td><td class='type'>"+a[i+3]+"</td>";
@@ -87,7 +114,7 @@ function editEntry(){
     console.log("Firstname:" + $('#editfirst').val() + "ID:" + editid);
     $('#searchresults').empty();
     $.ajax({
-	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?editid='+editid +'&editfname='+$('#editfirst').val()+'&editlname='+$('#editlast').val()+'&editphone='+$('#editphone').val()+'&edittype='+$('#edittype').val()+'&operation=edit',
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?editid='+editid +'&editfname='+$('#editfirst').val()+'&editlname='+$('#editlast').val()+'&editphone='+$('#editphone').val()+'&edittype='+$('#edittype').val()+'&operation=edit',
 	dataType: 'text',
 	success: editDone(),
 	error: function(){alert("Error: Something went wrong");}
@@ -126,10 +153,35 @@ function getMatches(){
     $('.editdata').hide();
     $('#searchresults').empty();
     $.ajax({
-	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?find='+$('#search').val()+'&operation='+operation,
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?find='+$('#search').val()+'&operation='+operation,
+	dataType: 'text',
+	success: processResults,
+	error: function(){alert("Error: Something went wrong with getMatches");}
+    });
+}
+
+
+function addArtifact(){
+    console.log("Attempting to add an entry");
+    console.log("Firstname:" + $('#addfirst').val());
+    $('#searchresults').empty();
+    $.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?afname='+$('#addname').val()+'&alname='+$('#adddescription').val()+'&aphone='+$('#addstock').val()+'&atype='+$('#addmodule').val()+'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong");}
+    });
+}
+
+function addModule(){
+    console.log("Attempting to add an entry");
+    console.log("Firstname:" + $('#addfirst').val());
+    $('#searchresults').empty();
+    $.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?afname='+$('#addmodule').val()+'&alname='+$('#adddescription').val()+'&operation='+operation,
+	dataType: 'text',
+	success: processResults,
+	error: function(){alert("Error: Something went wrong with addModule");}
     });
 }
 
@@ -138,7 +190,7 @@ function addEntry(){
     console.log("Firstname:" + $('#addfirst').val());
     $('#searchresults').empty();
     $.ajax({
-	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?afname='+$('#addfirst').val()+'&alname='+$('#addlast').val()+'&aphone='+$('#addphone').val()+'&atype='+$('#addtype').val()+'&operation='+operation,
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?afname='+$('#addfirst').val()+'&alname='+$('#addlast').val()+'&aphone='+$('#addphone').val()+'&atype='+$('#addtype').val()+'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong");}

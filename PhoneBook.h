@@ -19,9 +19,9 @@
 #define PHONEBOOK_H
 
 #define HOST "localhost"
-#define USER "iduma1"
+#define USER "rachfal1"
 #define DB "SPI"
-#define PASS "S215259"
+#define PASS "S216309"
 
 using namespace std;
 
