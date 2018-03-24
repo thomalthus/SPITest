@@ -16,10 +16,8 @@
 #include <cppconn/prepared_statement.h>
 
 #define HOST "localhost"
-
 #define USER "stantont"
 #define DB "SPI"
-
 
 using namespace std;
 //using namespace sql::mysql;
@@ -36,9 +34,6 @@ int main()
   cin >> pass;
   cout << endl;
   cin.ignore(100,'\n');
-  cout << "Enter name to find:";
-  string nameMatch;
-  cin >> nameMatch;
   try {
 
     sql::Driver* driver = sql::mysql::get_driver_instance();
@@ -46,7 +41,7 @@ int main()
     con->setSchema(database);
     std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
-    stmt->execute("CALL find_name('%"+nameMatch+"%')");
+    stmt->execute("CALL get_data()");
     std::auto_ptr< sql::ResultSet > res;
     do {
       res.reset(stmt->getResultSet());

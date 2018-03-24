@@ -16,10 +16,8 @@
 #include <cppconn/prepared_statement.h>
 
 #define HOST "localhost"
-
-#define USER "stantont"
-#define DB "SPI"
-
+#define USER "skon"
+#define DB "skon"
 
 using namespace std;
 //using namespace sql::mysql;
@@ -36,9 +34,6 @@ int main()
   cin >> pass;
   cout << endl;
   cin.ignore(100,'\n');
-  cout << "Enter name to find:";
-  string nameMatch;
-  cin >> nameMatch;
   try {
 
     sql::Driver* driver = sql::mysql::get_driver_instance();
@@ -46,19 +41,23 @@ int main()
     con->setSchema(database);
     std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
-    stmt->execute("CALL find_name('%"+nameMatch+"%')");
-    std::auto_ptr< sql::ResultSet > res;
+    string first, last, phone, type;
     do {
-      res.reset(stmt->getResultSet());
-      while (res->next()) {
-	cout << res->getString("name") << " "
-	     << res->getString("description") << " "
-	     << res->getString("stock") << " "
-	     << res->getString("module")
-	     << endl;
-      }
-    } while (stmt->getMoreResults());
+      cout << " Enter first name (nothing to end):";
+      getline(cin,first);
+      if (first.length()>0) {
+	cout << " Enter last name:";
+	getline(cin,last);
+	cout << " Enter phone #:";
+	getline(cin,phone);
+	cout << " Enter type:";
+	getline(cin,type);
 
+	// We need not check the return value explicitly. If it indicates
+	// an error, Connector/C++ generates an exception.
+	stmt->execute("CALL add_phone('"+first+"', '"+last+"', '"+phone+"', '"+type+"')");
+      }
+    } while (first.length() > 0);
       
   } catch (sql::SQLException &e) {
 	/*

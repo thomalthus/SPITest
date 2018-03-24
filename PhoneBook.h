@@ -19,7 +19,7 @@
 #define PHONEBOOK_H
 
 #define HOST "localhost"
-#define USER "stantont"
+#define USER "iduma1"
 #define DB "SPI"
 #define PASS "S215259"
 
@@ -28,12 +28,15 @@ using namespace std;
 class PhoneBook {
 public:
     PhoneBook();
-    vector<PhoneEntry> findByFirst(string first);
-    vector<PhoneEntry> findByLast(string last);
-    vector<PhoneEntry> findByType(string type);
-    void addEntry(string first,string last,string phone,string type);
-    void editEntry(string idnum,string first,string last,string phone,string type);
-    void deleteEntry(string idnum);
+
+    vector<PhoneEntry> findByName(string name);
+    vector<PhoneEntry> findByDescription(string description);
+    vector<PhoneEntry> findByModule(string module);
+
+    void addEntry(string name,string description,string stock,string module);
+    void editEntry(string artifactID,string first,string last,string phone,string type);
+    void deleteEntry(string artifactID);
+
 private:
     const string url=HOST;
     const string user=USER;
