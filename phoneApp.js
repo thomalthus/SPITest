@@ -2,7 +2,7 @@
 // Jim Skon, Kenyon College, 2017
 var operation;  // operation
 var editid;
-
+//Edited this section :)
 $(document).ready(function () {
     $('.editdata').hide();
     $("#search-btn").click(getMatches);
@@ -26,9 +26,13 @@ function changeOperation(operation){
     if(operation=="Add Entry"){
 	$('#addmessage').empty();
 	$('.inputdata').show();
-	$('.searchbox').hide();
+	$('.searchbox').show();
 	$('.results').hide();
 	$('.editdata').hide();}
+    else if(operation == "Add Module"){
+        $('.inputdata').show();
+
+    }
     else{
 	$('.editdata').hide();
 	$('.inputdata').hide();
