@@ -126,7 +126,7 @@ int main() {
     }
   }
 
-  if(operation=="Add Entry"){
+  if(operation=="Add Artifact"){
 
     form_iterator anameString = cgi.getElement("aname");
     form_iterator adescripString = cgi.getElement("adescrip");
@@ -151,13 +151,13 @@ int main() {
     output="success";
   }
   if(operation=="edit"){
-    form_iterator idtoeditString = cgi.getElement("editid");
+    form_iterator idtoeditString = cgi.getElement("editArtifactid");
     string idedit=**idtoeditString;
 
-    form_iterator editnameString = cgi.getElement("editname");
-    form_iterator editdescripString = cgi.getElement("editdescrip");
-    form_iterator editstockString = cgi.getElement("editstock");
-    form_iterator editmoduleString = cgi.getElement("editmodule");
+    form_iterator editnameString = cgi.getElement("editArtifactName");
+    form_iterator editdescripString = cgi.getElement("editArtifactDescription");
+    form_iterator editstockString = cgi.getElement("editArtifactStock");
+    form_iterator editmoduleString = cgi.getElement("editArtifactModule");
 
     string editname=**editnameString;
     string editdescrip=**editdescripString;

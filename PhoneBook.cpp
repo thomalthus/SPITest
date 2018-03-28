@@ -52,14 +52,11 @@ vector<PhoneEntry> PhoneBook::findByName(string name) {
   do {
     res.reset(stmt->getResultSet());
     while (res->next()) {
-		
+      
       PhoneEntry entry(res->getString("name"),res->getString("description"),
 		       res->getString("stock"),
 			   res->getString("module"), "ID");
-			   /*to_string(res->getInt("artifactID"))
-	  PhoneEntry entry("Hello","Hello", "Hello", "Hello","Hello");
-        */
-		
+		//res->getString("artifactID")	   
 		list.push_back(entry);
 		
 
@@ -104,10 +101,11 @@ void PhoneBook::addEntry(string name,string description,string stock, string mod
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
-
+  /*	
   if(module != "Friend" && module != "Family" && module!="Business"){
       module="Other";
   }
+  */
   stmt->execute("CALL add_entry('"+name+"','"+description+"','"+stock+"','"+module+"')");
 }
 
@@ -126,7 +124,7 @@ void PhoneBook::editEntry(string artifactIDnum,string name,string description,st
 }
 
 
-void PhoneBook::deleteEntry(string artifactIDnum){
+void PhoneBook::deleteEntry(string artifactID){
 
   sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
@@ -134,6 +132,6 @@ void PhoneBook::deleteEntry(string artifactIDnum){
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
 
-  stmt->execute("CALL delete_entry('"+artifactIDnum+"')");
+  stmt->execute("CALL delete_artifact('"+artifactID+"')");
 
 }

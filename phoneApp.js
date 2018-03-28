@@ -9,7 +9,7 @@ $(document).ready(function () {
 	$('.inputmodule').hide();
 	$('.inputartifact').hide();
     $("#search-btn").click(getMatches);
-    $("#add-btn").click(addEntry);
+    $("#addArtifact-btn").click(addArtifact);
     operation = "Find Artifact By Name";
     $("#clear").click(clearResults);
 
@@ -39,10 +39,15 @@ function changeOperation(operation){
 	if(operation=="Find Artifact By Name"){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
+		$('.results').show();
+		$('.searchbox').show();
+
+
 	}
 	else if(operation=="Find Artifact By Description"){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
+		$('.results').show();
 	}
 	else if(operation=="Find Module"){
 		$('.inputmodule').hide();
@@ -56,6 +61,7 @@ function changeOperation(operation){
 		$('.inputartifact').show();
 		
 		$('.inputmodule').hide();
+		$('.results').hide();
 	}	
     else if(operation == "Add Module"){
         $('.inputmodule').show();
@@ -131,10 +137,10 @@ function processDelete(){
     $('#searchresults').empty();
     var id=$(this).attr('ID');
     $.ajax({
-	url: '/cgi-bin/iduma1_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=delete',
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=delete',
 	dataType: 'text',
 	success: function(){alert("Deleted Record: " +id );},
-	error: function(){alert("Error: Something went wrong");}
+	error: function(){alert("Error: Something went wrong with processDelete");}
     });
 }
 function processResults(results) {
@@ -154,6 +160,7 @@ function clearResults() {
 }
 
 function getMatches(){
+	console.log("Getting Matches");
     $('.editdata').hide();
     $('#searchresults').empty();
     $.ajax({
@@ -167,38 +174,20 @@ function getMatches(){
 
 function addArtifact(){
     console.log("Attempting to add an entry");
-    console.log("Firstname:" + $('#addfirst').val());
+    //console.log("Firstname:" + $('#addfirst').val());
     $('#searchresults').empty();
+	$('.searchbox').hide();
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?afname='+$('#addname').val()+'&alname='+$('#adddescription').val()+'&aphone='+$('#addstock').val()+'&atype='+$('#addmodule').val()+'&operation='+operation,
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?aname='+$('#addname').val()
+	+'&adescrip='+$('#adddescription').val()+'&astock='
+	+$('#addstock').val()+'&amodule='+$('#addmodule').val()
+	+'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong");}
     });
 }
 
-function addModule(){
-    console.log("Attempting to add an entry");
-    console.log("Firstname:" + $('#addfirst').val());
-    $('#searchresults').empty();
-    $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?afname='+$('#addmodule').val()+'&alname='+$('#adddescription').val()+'&operation='+operation,
-	dataType: 'text',
-	success: processResults,
-	error: function(){alert("Error: Something went wrong with addModule");}
-    });
-}
 
-function addEntry(){
-    console.log("Attempting to add an entry");
-    console.log("Firstname:" + $('#addfirst').val());
-    $('#searchresults').empty();
-    $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?afname='+$('#addfirst').val()+'&alname='+$('#addlast').val()+'&aphone='+$('#addphone').val()+'&atype='+$('#addtype').val()+'&operation='+operation,
-	dataType: 'text',
-	success: processResults,
-	error: function(){alert("Error: Something went wrong");}
-    });
-}
-    
+
 
