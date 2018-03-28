@@ -15,22 +15,23 @@ PhoneBook::PhoneBook() {
     std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
     vector<PhoneEntry> list;
-
+	
     stmt->execute("CALL find_description('%"+description+"%')");
-
+	
     std::auto_ptr< sql::ResultSet > res;
     do {
       res.reset(stmt->getResultSet());
       while (res->next()) {
 
           PhoneEntry entry(res->getString("name"),res->getString("description"),
-			   res->getString("stock"),"Module", "ID");
+			   res->getString("stock"),res->getString("module"), "ID");
 
 	  
 	  list.push_back(entry);
 
       }
     } while (stmt->getMoreResults());
+	
     return list;
     
 }
@@ -54,7 +55,7 @@ vector<PhoneEntry> PhoneBook::findByName(string name) {
 		
       PhoneEntry entry(res->getString("name"),res->getString("description"),
 		       res->getString("stock"),
-			   "Module", "ID");
+			   res->getString("module"), "ID");
 			   /*to_string(res->getInt("artifactID"))
 	  PhoneEntry entry("Hello","Hello", "Hello", "Hello","Hello");
         */

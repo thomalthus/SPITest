@@ -10,7 +10,7 @@ $(document).ready(function () {
 	$('.inputartifact').hide();
     $("#search-btn").click(getMatches);
     $("#add-btn").click(addEntry);
-    operation = "Find Artifact";
+    operation = "Find Artifact By Name";
     $("#clear").click(clearResults);
 
     $(".dropdown-menu li a").click(function(){
@@ -36,7 +36,11 @@ function changeOperation(operation){
 		$('.inputmodule').hide();
 	}
 	*/
-	if(operation=="Find Artifact"){
+	if(operation=="Find Artifact By Name"){
+		$('.inputmodule').hide();
+		$('.inputartifact').hide();
+	}
+	else if(operation=="Find Artifact By Description"){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
 	}

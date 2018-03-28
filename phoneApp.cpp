@@ -54,7 +54,7 @@ int main() {
   }
 
 
-  if (operation == "Find Artifact") {
+  if (operation == "Find Artifact By Name") {
 
 	
 	form_iterator searchString = cgi.getElement("find");
@@ -62,6 +62,32 @@ int main() {
     string search = **searchString;
     
     pbResults = pb.findByName(search);
+    
+	if (pbResults.size() > 0) {
+		
+      output = "success";
+	  
+      for (int i = 0; i<pbResults.size(); i++) {
+	output += "~@$" + pbResults.at(i).name + "~@$"
+	  + pbResults.at(i).description + "~@$"
+	  + pbResults.at(i).stock + "~@$"
+	  + pbResults.at(i).module + "~@$" + pbResults.at(i).artifactID;
+
+      }
+    } else {
+      output = "No Match Found";
+    }
+	
+  }
+  
+  if (operation == "Find Artifact By Description") {
+
+	
+	form_iterator searchString = cgi.getElement("find");
+   
+    string search = **searchString;
+    
+    pbResults = pb.findByDescription(search);
     
 	if (pbResults.size() > 0) {
 		
