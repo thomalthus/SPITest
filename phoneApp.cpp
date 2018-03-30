@@ -110,14 +110,11 @@ int main() {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
-    pbResults = pb.findByModule(search);
+    pbResults = pb.findModule(search);
     if (pbResults.size() > 0) {
       output = "success";
       for (int i = 0; i<pbResults.size(); i++) {
-	output += "," + pbResults.at(i).name + ","
-	  + pbResults.at(i).description + ","
-	  + pbResults.at(i).stock + ","
-	  + pbResults.at(i).module + ","
+	output += "~@$" + pbResults.at(i).name
 	  + pbResults.at(i).artifactID;
 
       }
@@ -143,21 +140,38 @@ int main() {
     output="success";
   }
   
+  if(operation=="Add Module"){
+
+    form_iterator anameString = cgi.getElement("amodname");
+    //form_iterator adescripString = cgi.getElement("amoddescrip");
+
+
+    string addname=**anameString;
+    //string adddescrip=**adescripString;
+    
+    pb.addModule(addname);
+
+    output="success";
+  }
+  
+  
+  
   if(operation=="delete"){
     form_iterator idtodeleteString = cgi.getElement("deleteid");
     string iddelete=**idtodeleteString;
 
-    pb.deleteEntry(iddelete);
+    pb.deleteArtifact(iddelete);
     output="success";
   }
+  
   if(operation=="edit"){
-    form_iterator idtoeditString = cgi.getElement("editArtifactid");
+    form_iterator idtoeditString = cgi.getElement("editartid");
     string idedit=**idtoeditString;
 
-    form_iterator editnameString = cgi.getElement("editArtifactName");
-    form_iterator editdescripString = cgi.getElement("editArtifactDescription");
-    form_iterator editstockString = cgi.getElement("editArtifactStock");
-    form_iterator editmoduleString = cgi.getElement("editArtifactModule");
+    form_iterator editnameString = cgi.getElement("editartname");
+    form_iterator editdescripString = cgi.getElement("editartdescrip");
+    form_iterator editstockString = cgi.getElement("editartstock");
+    form_iterator editmoduleString = cgi.getElement("editartmod");
 
     string editname=**editnameString;
     string editdescrip=**editdescripString;
@@ -165,10 +179,11 @@ int main() {
     string editmodule=**editmoduleString;
 
 
-    pb.editEntry(idedit,editname,editdescrip,editstock,editmodule);
+    pb.editArtifactEntry(idedit,editname,editdescrip,editstock,editmodule);
     output="success";
   }
-  //didnt change "editid" or anthing similar to "editartifactid" because i dont think it matters
+  //didnt change "editid" or anthing similar to "editartifactid" because 
+  //i dont think it matters
 
   
   /* send back the results */

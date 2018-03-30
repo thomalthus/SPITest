@@ -31,12 +31,15 @@ public:
 
     vector<PhoneEntry> findByName(string name);
     vector<PhoneEntry> findByDescription(string description);
-    vector<PhoneEntry> findByModule(string module);
-
-    void addEntry(string name,string description,string stock,string module);
-    void editEntry(string artifactID,string first,string last,string phone,string type);
-    void deleteEntry(string artifactID);
-
+    vector<PhoneEntry> findByModule(string module); //search artifact table by module name
+	vector<PhoneEntry> findModule(string name); //Search module table
+    
+	void addModule(string name);
+	
+	void addEntry(string name,string description,string stock,string module);
+    void editArtifactEntry(string artifactID,string first,string last,string phone,string type);
+    //void deleteEntry(string artifactID);
+	void deleteArtifact(string artifactID);
 private:
     const string url=HOST;
     const string user=USER;

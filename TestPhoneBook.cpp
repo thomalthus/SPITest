@@ -91,7 +91,7 @@ int main(){
     string IDnum;
     cout << "Enter an ID number to delete";
     cin >> IDnum;
-    pb.deleteEntry(IDnum);
+    //pb.deleteEntry(IDnum);
     cout << "Attempted delete";
     
 return 0;}
