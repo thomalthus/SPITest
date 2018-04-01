@@ -38,7 +38,7 @@ PutCGI: SPIApp
 
 PutHTML:
 	cp phoneApp.html /var/www/html/class/ssd/$(USER)/PhoneAppComplete
-	cp phoneApp.js /var/www/html/class/ssd/$(USER)/PhoneAppComplete
+	cp SPIApp.js /var/www/html/class/ssd/$(USER)/PhoneAppComplete
 	cp phoneApp.css /var/www/html/class/ssd/$(USER)/PhoneAppComplete
 
 
