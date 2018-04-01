@@ -37,9 +37,9 @@ PutCGI: SPIApp
 	ls -l /usr/lib/cgi-bin/
 
 PutHTML:
-	cp phoneApp.html /var/www/html/class/ssd/$(USER)/PhoneAppComplete
+	cp SPIApp.html /var/www/html/class/ssd/$(USER)/PhoneAppComplete
 	cp SPIApp.js /var/www/html/class/ssd/$(USER)/PhoneAppComplete
-	cp phoneApp.css /var/www/html/class/ssd/$(USER)/PhoneAppComplete
+	cp SPIApp.css /var/www/html/class/ssd/$(USER)/PhoneAppComplete
 
 
 	echo "Current contents of your HTML directory: "
