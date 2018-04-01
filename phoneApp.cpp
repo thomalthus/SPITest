@@ -22,9 +22,11 @@ int main() {
   Cgicc cgi;    // Ajax object
   char *cstr;
 
-  PhoneBook pb; // Phone Book SQL Interface Object
-  vector<PhoneEntry> pbResults;
+  EntryManager am; // Phone Book SQL Interface Object
+  EntryManager mm;
   
+  vector<ArtifactEntry> amResults;
+  vector<ModuleEntry> mmResults; //Ways to manage different types of classes
   // Create AJAX objects to recieve information from web page.
   form_iterator op = cgi.getElement("operation");
   string operation = **op;
@@ -37,15 +39,15 @@ int main() {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
-    pbResults = pb.findByDescription(search);
-    if (pbResults.size() > 0) {
+    amResults = am.findByDescription(search);
+    if (amResults.size() > 0) {
       output = "success";
-      for (int i = 0; i<pbResults.size(); i++) {
-	output += "," + pbResults.at(i).name + ","
-	  + pbResults.at(i).description + ","
-	  + pbResults.at(i).stock + ","
-	  + pbResults.at(i).module + ","
-	  + pbResults.at(i).artifactID;
+      for (int i = 0; i<amResults.size(); i++) {
+	output += "," + amResults.at(i).name + ","
+	  + amResults.at(i).description + ","
+	  + amResults.at(i).stock + ","
+	  + amResults.at(i).module + ","
+	  + amResults.at(i).artifactID;
 
       }
     } else {
@@ -61,17 +63,17 @@ int main() {
    
     string search = **searchString;
     
-    pbResults = pb.findByName(search);
+    amResults = am.findByName(search);
     
-	if (pbResults.size() > 0) {
+	if (amResults.size() > 0) {
 		
       output = "success";
 	  
-      for (int i = 0; i<pbResults.size(); i++) {
-	output += "~@$" + pbResults.at(i).name + "~@$"
-	  + pbResults.at(i).description + "~@$"
-	  + pbResults.at(i).stock + "~@$"
-	  + pbResults.at(i).module + "~@$" + pbResults.at(i).artifactID;
+      for (int i = 0; i<amResults.size(); i++) {
+	output += "~@$" + amResults.at(i).name + "~@$"
+	  + amResults.at(i).description + "~@$"
+	  + amResults.at(i).stock + "~@$"
+	  + amResults.at(i).module + "~@$" + amResults.at(i).artifactID;
 
       }
     } else {
@@ -87,17 +89,17 @@ int main() {
    
     string search = **searchString;
     
-    pbResults = pb.findByDescription(search);
+    amResults = am.findByDescription(search);
     
-	if (pbResults.size() > 0) {
+	if (amResults.size() > 0) {
 		
       output = "success";
 	  
-      for (int i = 0; i<pbResults.size(); i++) {
-	output += "~@$" + pbResults.at(i).name + "~@$"
-	  + pbResults.at(i).description + "~@$"
-	  + pbResults.at(i).stock + "~@$"
-	  + pbResults.at(i).module + "~@$" + pbResults.at(i).artifactID;
+      for (int i = 0; i<amResults.size(); i++) {
+	output += "~@$" + amResults.at(i).name + "~@$"
+	  + amResults.at(i).description + "~@$"
+	  + amResults.at(i).stock + "~@$"
+	  + amResults.at(i).module + "~@$" + amResults.at(i).artifactID;
 
       }
     } else {
@@ -105,23 +107,25 @@ int main() {
     }
 	
   }
-
+	
   if (operation == "Find Module") {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
-    pbResults = pb.findModule(search);
-    if (pbResults.size() > 0) {
+    mmResults = mm.findModule(search);
+    if (mmResults.size() > 0) {
       output = "success";
-      for (int i = 0; i<pbResults.size(); i++) {
-	output += "~@$" + pbResults.at(i).name
-	  + pbResults.at(i).artifactID;
+      for (int i = 0; i<mmResults.size(); i++) {
+	output += "~@$" + mmResults.at(i).name
+	  + mmResults.at(i).moduleID;
 
       }
     } else {
       output = "No Match Found";
     }
+	
   }
+  
 
   if(operation=="Add Artifact"){
 
@@ -135,7 +139,7 @@ int main() {
     string addstock=**addstockString;
     string addmodule=**addmoduleString;
 
-    pb.addEntry(addname,adddescrip,addstock,addmodule);
+    am.addEntry(addname,adddescrip,addstock,addmodule);
 
     output="success";
   }
@@ -149,22 +153,22 @@ int main() {
     string addname=**anameString;
     //string adddescrip=**adescripString;
     
-    pb.addModule(addname);
+    mm.addModule(addname);
 
     output="success";
   }
   
   
   
-  if(operation=="delete"){
+  if(operation=="delete Artifact"){
     form_iterator idtodeleteString = cgi.getElement("deleteid");
     string iddelete=**idtodeleteString;
 
-    pb.deleteArtifact(iddelete);
+    am.deleteArtifact(iddelete);
     output="success";
   }
   
-  if(operation=="edit"){
+  if(operation=="edit Artifact"){
     form_iterator idtoeditString = cgi.getElement("editartid");
     string idedit=**idtoeditString;
 
@@ -179,8 +183,13 @@ int main() {
     string editmodule=**editmoduleString;
 
 
-    pb.editArtifactEntry(idedit,editname,editdescrip,editstock,editmodule);
+    am.editArtifactEntry(idedit,editname,editdescrip,editstock,editmodule);
     output="success";
+  }
+  
+  if(operation=="Display Artifacts"){
+	  
+	  
   }
   //didnt change "editid" or anthing similar to "editartifactid" because 
   //i dont think it matters

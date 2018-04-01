@@ -42,6 +42,8 @@ function changeOperation(operation){
 		$('.editartifactdata').hide();
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
+		//$('.editdata').hide();
+		
 		$('.results').show();
 		$('.searchbox').show();
 
@@ -50,19 +52,32 @@ function changeOperation(operation){
 	else if(operation=="Find Artifact By Description"){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
+		//$('.editdata').hide();
+		$('.editartifactdata').hide();
+	
+		$('.searchbox').show();
 		$('.results').show();
 	}
 	else if(operation=="Find Module"){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
+		$('.editartifactdata').hide();
+			
+		$('.editdata').hide();	
+		$('.searchbox').show();
+		$('.results').show();
 	}
 	else if(operation=="Find Project"){
+		$('.editartifactdata').hide();
+		$('.editdata').hide();
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
 	}
 	else if(operation=="Add Artifact"){
 		$('.inputartifact').show();
 		
+		$('.editartifactdata').hide();
+		$('.editdata').hide();
 		$('.searchbox').hide();
 		$('.inputmodule').hide();
 		$('.results').hide();
@@ -70,7 +85,11 @@ function changeOperation(operation){
     else if(operation == "Add Module"){
         $('.inputmodule').show();
 		
+		$('.editartifactdata').hide();
+		$('.editdata').hide();
+		$('.searchbox').hide();
 		$('.inputartifact').hide();
+		$('.results').hide();
     }
 	else if(operation=="Add Project"){
 	
@@ -97,7 +116,7 @@ function buildArtifactTable(list) {
 	for (var i = 1; i < aLen; i+=5) {
 	    result += "<tr><td class='artName'>"+a[i]+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
 	    result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm editart'>Change</button> ";
-	    result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm delete'>Delete</button></td></tr>";
+	    result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm deleteart'>Delete</button></td></tr>";
 	}
 	result += "</table>";
 	
@@ -126,7 +145,7 @@ function buildModuleTable(list) {
     }
 }
 
-function processEdit(){
+function processArtifactEdit(){
     $('#searchresults').empty();
     $('.editartifactdata').show();
     $("#editart-btn").click(editArtifactEntry);
@@ -154,7 +173,7 @@ function editArtifactEntry(){
 	editid +'&editartname='+$('#editArtName').val()+'&editartdescrip='+
 	$('#editArtDescription').val()+'&editartstock='+
 	$('#editArtStock').val()+'&editartmod='+
-	$('#editArtModule').val()+'&operation=edit',
+	$('#editArtModule').val()+'&operation='+"edit Artifact",
 	dataType: 'text',
 	success: editDone(),
 	error: function(){alert("Error: Something went wrong");}
@@ -162,17 +181,25 @@ function editArtifactEntry(){
 }
 
 
-function processDelete(){
+function processArtifactDelete(){
     console.log("Attempting to delete an entry");
     $('#searchresults').empty();
     var id=$(this).attr('ID');
 	console.log(id);
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=delete',
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=' + "delete Artifact",
 	dataType: 'text',
 	success: function(){alert("Deleted Record: " +id );},
 	error: function(){alert("Error: Something went wrong with processDelete");}
     });
+	/*
+	$.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteid='+$(this).attr('ID')+'&operation=' + "delete Artifact",
+	dataType: 'text',
+	success: function(){alert("Deleted Record: " +id );},
+	error: function(){alert("Error: Something went wrong with processDelete");}
+    });
+	*/
 }
 function processResults(results) {
     $('#editmessage').empty();
@@ -187,8 +214,8 @@ function processResults(results) {
 	if(operation == "Find Artifact By Name" || operation == "Find Artifact By Description"){
 		$('#searchresults').append(buildArtifactTable(results));
 	}
-    $(".editart").click(processEdit);
-    $(".delete").click(processDelete);
+    $(".editart").click(processArtifactEdit);
+    $(".deleteart").click(processArtifactDelete);
     $('#addmessage').text($('#addname').val()+" ADDED to Database");
     
 }

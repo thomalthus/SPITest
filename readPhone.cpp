@@ -28,7 +28,7 @@ int main()
   const string user(USER);
   const string database(DB);
   string pass;
-  
+  /*
   cout << "Connector/C++ Phone Book example" << endl;
   cout << "Enter password for " << user << ":";
   cin >> pass;
@@ -72,7 +72,7 @@ int main()
     
     return EXIT_FAILURE;
   }
- 
+ */
   cout << "Done." << endl;
   return EXIT_SUCCESS;
 }

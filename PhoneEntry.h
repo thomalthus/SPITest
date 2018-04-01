@@ -1,14 +1,15 @@
 #include <string>
 using namespace std;
 
-#ifndef PHONEENTRY_H
-#define PHONEENTRY_H
+#ifndef ENTRY_H
+#define ENTRY_H
+class ModuleEntry;
 
-class PhoneEntry {
+class ArtifactEntry {
 public:
-     PhoneEntry();
+     ArtifactEntry();
 
-     PhoneEntry(string n, string d, string s, string m, string I);
+     ArtifactEntry(string n, string d, string s, string m, string I);
      string name;
      string description;
      string stock;
@@ -19,5 +20,15 @@ private:
 
 };
 
-#endif /* PHONEENTRY_H */
+class ModuleEntry{
+public:
+	 
+	 ModuleEntry();
+	 
+	 ModuleEntry(string n, string I);
+	 string name;
+	 string moduleID;
+
+};
+#endif /* ENTRY_H */
 

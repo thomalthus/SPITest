@@ -15,8 +15,8 @@
 #include <cppconn/prepared_statement.h>
 #include "PhoneEntry.h"
 
-#ifndef PHONEBOOK_H
-#define PHONEBOOK_H
+#ifndef ENTRYMANAGER_H
+#define ENTRYMANAGER_H
 
 #define HOST "localhost"
 #define USER "rachfal1"
@@ -25,14 +25,14 @@
 
 using namespace std;
 
-class PhoneBook {
+class EntryManager {
 public:
-    PhoneBook();
+    EntryManager();
 
-    vector<PhoneEntry> findByName(string name);
-    vector<PhoneEntry> findByDescription(string description);
-    vector<PhoneEntry> findByModule(string module); //search artifact table by module name
-	vector<PhoneEntry> findModule(string name); //Search module table
+    vector<ArtifactEntry> findByName(string name);
+    vector<ArtifactEntry> findByDescription(string description);
+    vector<ArtifactEntry> findByModule(string module); //search artifact table by module name
+	vector<ModuleEntry> findModule(string name); //Search module table
     
 	void addModule(string name);
 	
@@ -48,5 +48,5 @@ private:
     
 };
 
-#endif /* PHONEBOOK_H */
+#endif /* ENTRYMANAGER_H */
 
