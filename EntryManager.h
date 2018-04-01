@@ -33,7 +33,7 @@ public:
     vector<ArtifactEntry> findByDescription(string description);
     vector<ArtifactEntry> findByModule(string module); //search artifact table by module name
 	vector<ModuleEntry> findModule(string name); //Search module table
-    
+    vector<ArtifactEntry> displayArtifactsByModule(string name);
 	void addModule(string name);
 	
 	void addEntry(string name,string description,string stock,string module);

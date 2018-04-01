@@ -65,6 +65,38 @@ vector<ModuleEntry> EntryManager::findModule(string name) {
 }
 
 
+vector<ArtifactEntry> EntryManager::displayArtifactsByModule(string modID) {
+
+  sql::Driver* driver = sql::mysql::get_driver_instance();
+  std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+  con->setSchema(database);
+  std::auto_ptr<sql::Statement> stmt(con->createStatement());
+
+  vector<ArtifactEntry> list;
+  	
+  stmt->execute("search_artifacts_by_module('%"+modID+"%')");
+  /*
+  std::auto_ptr< sql::ResultSet > res;
+  
+  do {
+    res.reset(stmt->getResultSet());
+    while (res->next()) {
+      
+      ArtifactEntry entry(res->getString("name"),res->getString("description"),
+		       res->getString("stock"),
+			   res->getString("module"), res->getString("artifactID"));
+		
+		list.push_back(entry);
+		
+
+    }
+  } while (stmt->getMoreResults());
+ */
+  return list;
+
+}
+
+
 vector<ArtifactEntry> EntryManager::findByName(string name) {
 
   sql::Driver* driver = sql::mysql::get_driver_instance();

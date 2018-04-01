@@ -134,10 +134,10 @@ function buildModuleTable(list) {
     } else {
  	var result = '<table id="modtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Module Name</th><th>Action</th><tr>';
 	var aLen = a.length;
-	for (var i = 1; i < aLen; i++) {
+	for (var i = 1; i < aLen; i+=2) {
 	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i]+"cell'>"+a[i] +"</td>";
-	    //result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm edit'>Change</button> ";
-	    result += "<td align=center><button type='button' ID='"+a[i]+"button' class='btn btn-primary btn-sm edit'>Display artifacts</button></td></tr>";
+	    
+	    result += "<td align=center><button type='button' ID='"+a[i + 1]+"' class='btn btn-primary btn-sm displayart'>Display artifacts</button></td></tr>";
 	}
 	result += "</table>";
 	
@@ -201,6 +201,21 @@ function processArtifactDelete(){
     });
 	*/
 }
+
+function processArtifactDisplayByModule(){
+    console.log("Attempting to display artifacts associated with this module");
+    $('#searchresults').empty();
+    var id=$(this).attr('ID');
+	console.log(id);
+    $.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disartmod='+$(this).attr('ID')+'&operation=' + "Display Artifact By Module",
+	dataType: 'text',
+	success: processResults,
+	error: function(){alert("Error: Something went wrong with processArtifactDisplayByModule");}
+    });
+	
+}
+
 function processResults(results) {
     $('#editmessage').empty();
     $('#addmessage').empty();
@@ -216,6 +231,7 @@ function processResults(results) {
 	}
     $(".editart").click(processArtifactEdit);
     $(".deleteart").click(processArtifactDelete);
+	$(".displayart").click(processArtifactDisplayByModule);
     $('#addmessage').text($('#addname').val()+" ADDED to Database");
     
 }

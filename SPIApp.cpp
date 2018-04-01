@@ -116,7 +116,7 @@ int main() {
     if (mmResults.size() > 0) {
       output = "success";
       for (int i = 0; i<mmResults.size(); i++) {
-	output += "~@$" + mmResults.at(i).name
+	output += "~@$" + mmResults.at(i).name +"~@$"
 	  + mmResults.at(i).moduleID;
 
       }
@@ -158,7 +158,29 @@ int main() {
     output="success";
   }
   
-  
+  if(operation=="Display Artifact By Module"){
+    
+	form_iterator searchString = cgi.getElement("disartmod");
+   
+    string search = **searchString;
+    
+    amResults = am.displayArtifactsByModule(search);
+    
+	if (amResults.size() > 0) {
+		
+      output = "success";
+	  
+      for (int i = 0; i<amResults.size(); i++) {
+	output += "~@$" + amResults.at(i).name + "~@$"
+	  + amResults.at(i).description + "~@$"
+	  + amResults.at(i).stock + "~@$"
+	  + amResults.at(i).module + "~@$" + amResults.at(i).artifactID;
+
+      }
+    } else {
+      output = "No Match Found";
+    }  
+  }
   
   if(operation=="delete Artifact"){
     form_iterator idtodeleteString = cgi.getElement("deleteid");
