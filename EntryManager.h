@@ -13,7 +13,7 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
-#include "PhoneEntry.h"
+#include "Entry.h"
 
 #ifndef ENTRYMANAGER_H
 #define ENTRYMANAGER_H

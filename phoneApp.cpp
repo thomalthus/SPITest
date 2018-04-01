@@ -8,8 +8,8 @@
 #include "cgicc/HTTPHTMLHeader.h"
 #include "cgicc/HTMLClasses.h"
 
-#include "PhoneBook.h"
-#include "PhoneEntry.h"
+#include "EntryManager.h"
+#include "Entry.h"
 
 #define XML_USE_STL
 

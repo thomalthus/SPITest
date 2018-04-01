@@ -1,5 +1,5 @@
 
-#include "PhoneEntry.h"
+#include "Entry.h"
 
 ArtifactEntry::ArtifactEntry() {
 }

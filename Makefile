@@ -17,11 +17,11 @@ RM= /bin/rm -f
 
 all:  phoneApp PutHTML PutCGI
 
-PhoneEntry.o: PhoneEntry.cpp PhoneEntry.h
-	$(CC) -c $(CFLAGS) PhoneEntry.cpp
+Entry.o: Entry.cpp Entry.h
+	$(CC) -c $(CFLAGS) Entry.cpp
 
-PhoneBook.o: PhoneBook.cpp PhoneBook.h
-	$(CC) -c $(CFLAGS) -I/usr/include/cppconn PhoneBook.cpp
+PhoneBook.o: EntryManager.cpp EntryManager.h
+	$(CC) -c $(CFLAGS) -I/usr/include/cppconn EntryManager.cpp
 
 
 phoneApp.o: phoneApp.cpp 

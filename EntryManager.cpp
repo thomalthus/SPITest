@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
-#include "PhoneBook.h"
-#include "PhoneEntry.h"
+#include "EntryManager.h"
+#include "Entry.h"
 
 EntryManager::EntryManager() {
 
