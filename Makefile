@@ -29,9 +29,9 @@ SPIApp.o: SPIApp.cpp
 SPIApp: SPIApp.o EntryManager.o Entry.o
 	$(CC) SPIApp.o EntryManager.o Entry.o -o SPIApp -L/usr/local/lib -lcgicc -lmysqlcppconn
 
-PutCGI: phoneApp
-	chmod 757 phoneApp
-	cp phoneApp /usr/lib/cgi-bin/$(USER)_phoneAppComplete.cgi 
+PutCGI: SPIApp
+	chmod 757 SPIApp
+	cp SPIApp /usr/lib/cgi-bin/$(USER)_phoneAppComplete.cgi 
 
 	echo "Current contents of your cgi-bin directory: "
 	ls -l /usr/lib/cgi-bin/
