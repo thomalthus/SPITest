@@ -15,20 +15,19 @@ CFLAGS= -std=c++14  -Wno-deprecated-declarations
 
 RM= /bin/rm -f
 
-all:  phoneApp PutHTML PutCGI
+all:  SPIApp PutHTML PutCGI
 
 Entry.o: Entry.cpp Entry.h
 	$(CC) -c $(CFLAGS) Entry.cpp
 
-PhoneBook.o: EntryManager.cpp EntryManager.h
+EntryManager.o: EntryManager.cpp EntryManager.h
 	$(CC) -c $(CFLAGS) -I/usr/include/cppconn EntryManager.cpp
 
+SPIApp.o: SPIApp.cpp 
+	$(CC) -c $(CFLAGS) SPIApp.cpp
 
-phoneApp.o: phoneApp.cpp 
-	$(CC) -c $(CFLAGS) phoneApp.cpp
-
-phoneApp: phoneApp.o PhoneBook.o PhoneEntry.o
-	$(CC) phoneApp.o PhoneBook.o PhoneEntry.o -o phoneApp -L/usr/local/lib -lcgicc -lmysqlcppconn
+SPIApp: SPIApp.o EntryManager.o Entry.o
+	$(CC) SPIApp.o EntryManager.o Entry.o -o SPIApp -L/usr/local/lib -lcgicc -lmysqlcppconn
 
 PutCGI: phoneApp
 	chmod 757 phoneApp
