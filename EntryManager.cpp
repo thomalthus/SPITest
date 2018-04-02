@@ -73,9 +73,9 @@ vector<ArtifactEntry> EntryManager::displayArtifactsByModule(string modID) {
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
   vector<ArtifactEntry> list;
-  	
-  stmt->execute("search_artifacts_by_module('%"+modID+"%')");
-  /*
+  
+  stmt->execute("CALL search_artifacts_by_module('%"+modID+"%')");
+  
   std::auto_ptr< sql::ResultSet > res;
   
   do {
@@ -91,7 +91,7 @@ vector<ArtifactEntry> EntryManager::displayArtifactsByModule(string modID) {
 
     }
   } while (stmt->getMoreResults());
- */
+ 
   return list;
 
 }

@@ -205,10 +205,11 @@ function processArtifactDelete(){
 function processArtifactDisplayByModule(){
     console.log("Attempting to display artifacts associated with this module");
     $('#searchresults').empty();
+	operation = "Display Artifact By Module";
     var id=$(this).attr('ID');
 	console.log(id);
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disartmod='+$(this).attr('ID')+'&operation=' + "Display Artifact By Module",
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disartmod='+$(this).attr('ID')+'&operation=' + operation,
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong with processArtifactDisplayByModule");}
@@ -228,6 +229,11 @@ function processResults(results) {
 	
 	if(operation == "Find Artifact By Name" || operation == "Find Artifact By Description"){
 		$('#searchresults').append(buildArtifactTable(results));
+		
+	}
+	if(operation == "Display Artifact By Module"){
+		$('#searchresults').append(buildArtifactTable(results));
+		operation = "Find Module";
 	}
     $(".editart").click(processArtifactEdit);
     $(".deleteart").click(processArtifactDelete);
