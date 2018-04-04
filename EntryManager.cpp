@@ -97,6 +97,8 @@ vector<ArtifactEntry> EntryManager::displayArtifactsByModule(string modID) {
 }
 
 
+
+
 vector<ArtifactEntry> EntryManager::findByName(string name) {
 
   sql::Driver* driver = sql::mysql::get_driver_instance();

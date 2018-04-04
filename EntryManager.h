@@ -36,6 +36,9 @@ public:
     vector<ArtifactEntry> displayArtifactsByModule(string name);
 	void addModule(string name);
 	
+	
+	
+	
 	void addEntry(string name,string description,string stock,string module);
     void editArtifactEntry(string artifactID,string first,string last,string phone,string type);
     //void deleteEntry(string artifactID);

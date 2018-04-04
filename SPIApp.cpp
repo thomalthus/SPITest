@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <vector>
+#include <algorithm>
 
 // Stuff for AJAX
 #include "cgicc/Cgicc.h"
@@ -17,6 +19,11 @@ using namespace std;
 using namespace cgicc; // Needed for AJAX functions.
 
 ofstream logfile; 
+
+void sortArtByName(vector<ArtifactEntry> a);
+static bool compareArtByName(ArtifactEntry a, ArtifactEntry b);
+
+
 
 int main() {
   Cgicc cgi;    // Ajax object
@@ -79,7 +86,7 @@ int main() {
     } else {
       output = "No Match Found";
     }
-	
+	sortArtByName(amResults);
   }
   
   if (operation == "Find Artifact By Description") {
@@ -225,4 +232,20 @@ int main() {
   
   return 0;
 }
+
+
+bool compareArtByName(ArtifactEntry a, ArtifactEntry b){
+	
+	return(a.name > b.name);
+		
+	
+}
+
+void sortArtByName(vector<ArtifactEntry> a) {
+
+   sort(a.begin(), a.end(), compareArtByName);
+  
+
+}
+
 

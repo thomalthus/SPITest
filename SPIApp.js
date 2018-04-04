@@ -14,7 +14,10 @@ $(document).ready(function () {
 	$("#addMod-btn").click(addModule);
     operation = "Find Artifact By Name";
     $("#clear").click(clearResults);
-
+	$(document).on("click","#artobj-btn",function(){
+		console.log("hey");
+	});
+	
     $(".dropdown-menu li a").click(function(){
 	console.log("pick!"+$(this).text());
 	$(this).parents(".btn-group").find('.selection').text($(this).text());
@@ -111,7 +114,7 @@ function buildArtifactTable(list) {
     } else if (a.length == 1) {
 	return "<h3>No Item Found</h3>";
     } else {
- 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
+ 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th id="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
 	var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
 	    result += "<tr><td class='artName'>"+a[i]+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
@@ -279,6 +282,9 @@ function addArtifact(){
     });
 
 }
+
+
+
 
 function addModule(){
     console.log("Attempting to add an entry");
