@@ -1,2 +1,32 @@
 
 tr:hover {background-color: #00774H}
+
+body{
+		background-color: white;
+	
+	}
+	.jumbotron{
+		
+	}
+	.inputartifact{
+		
+	}
+	.navbar-collapse{
+		<!--background-color: #6B79DD-->
+	}
+	
+.jumbotron{
+   
+   height:80 px;
+   
+   }
+   
+#spi-icon{
+	
+}
+.navbar-light{
+	margin:0;
+}
+#searchtype{
+	/*padding-left:130px;*/
+}

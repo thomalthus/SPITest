@@ -16,6 +16,7 @@ $(document).ready(function () {
     $("#clear").click(clearResults);
 	$(document).on("click","#artobj-btn",function(){
 		console.log("hey");
+		//addArtifact();
 	});
 	
     $(".dropdown-menu li a").click(function(){
@@ -114,7 +115,7 @@ function buildArtifactTable(list) {
     } else if (a.length == 1) {
 	return "<h3>No Item Found</h3>";
     } else {
- 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th id="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
+ 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
 	var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
 	    result += "<tr><td class='artName'>"+a[i]+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";

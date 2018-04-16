@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
-
+#include <boost/algorithm/string.hpp>    
 // Stuff for AJAX
 #include "cgicc/Cgicc.h"
 #include "cgicc/HTTPHTMLHeader.h"
@@ -20,8 +20,10 @@ using namespace cgicc; // Needed for AJAX functions.
 
 ofstream logfile; 
 
-void sortArtByName(vector<ArtifactEntry> a);
-static bool compareArtByName(ArtifactEntry a, ArtifactEntry b);
+void sortArtByName(vector<ArtifactEntry> &a);
+bool compareArtByName(ArtifactEntry a, ArtifactEntry b);
+void sortArtByDescription(vector<ArtifactEntry> &a);
+bool compartArtByDescription(ArtifactEntry a, ArtifactEntry b);
 
 
 
@@ -40,7 +42,7 @@ int main() {
   logfile.open("stantontphone.log",ios::out | ios::app);
   logfile << "Op:" << operation << endl;
   logfile.close();
-  string output = "Error =- Operation not support yet!";
+  string output = "Error =- Operation not supported yet!";
 
   if (operation == "Find description") {
     form_iterator searchString = cgi.getElement("find");
@@ -65,16 +67,17 @@ int main() {
 
   if (operation == "Find Artifact By Name") {
 
-	
+	int j = 5;
 	form_iterator searchString = cgi.getElement("find");
    
     string search = **searchString;
     
     amResults = am.findByName(search);
-    
+    sortArtByName(amResults);
+	
 	if (amResults.size() > 0) {
 		
-      output = "success";
+      //output = "~@$ success";
 	  
       for (int i = 0; i<amResults.size(); i++) {
 	output += "~@$" + amResults.at(i).name + "~@$"
@@ -83,10 +86,12 @@ int main() {
 	  + amResults.at(i).module + "~@$" + amResults.at(i).artifactID;
 
       }
+	 
+	  
     } else {
       output = "No Match Found";
     }
-	sortArtByName(amResults);
+	
   }
   
   if (operation == "Find Artifact By Description") {
@@ -97,7 +102,7 @@ int main() {
     string search = **searchString;
     
     amResults = am.findByDescription(search);
-    
+    sortArtByDescription(amResults);
 	if (amResults.size() > 0) {
 		
       output = "success";
@@ -235,15 +240,33 @@ int main() {
 
 
 bool compareArtByName(ArtifactEntry a, ArtifactEntry b){
-	
-	return(a.name > b.name);
+	string A(a.name), B(b.name);
+	boost::algorithm::to_lower(A);
+	boost::algorithm::to_lower(B);
+	return((A) < (B));
 		
 	
 }
 
-void sortArtByName(vector<ArtifactEntry> a) {
+bool compareArtByDescription(ArtifactEntry a, ArtifactEntry b){
+	string A(a.description), B(b.description);
+	boost::algorithm::to_lower(A);
+	boost::algorithm::to_lower(B);
+	return((A) < (B));
+		
+	
+}
+
+void sortArtByName(vector<ArtifactEntry> &a) {
 
    sort(a.begin(), a.end(), compareArtByName);
+  
+
+}
+
+void sortArtByDescription(vector<ArtifactEntry> &a) {
+
+   sort(a.begin(), a.end(), compareArtByDescription);
   
 
 }

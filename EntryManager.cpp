@@ -217,3 +217,5 @@ void EntryManager::deleteArtifact(string artifactID){
   stmt->execute("CALL delete_artifact('"+artifactID+"')");
 
 }
+
+
