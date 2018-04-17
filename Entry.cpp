@@ -18,3 +18,11 @@ ModuleEntry::ModuleEntry(string n, string I){
 	name = n;
 	moduleID = I;
 }
+
+ProjectEntry::ProjectEntry(string n, string d, string I){
+        name = n;
+        instructions = d;
+	projectID = I;
+
+
+}

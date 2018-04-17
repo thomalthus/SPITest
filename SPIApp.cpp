@@ -32,10 +32,14 @@ int main() {
   char *cstr;
 
   EntryManager am; // Phone Book SQL Interface Object
-  EntryManager mm;
+  EntryManager mm; //manages modules
+
+  EntryManager pm; //manages project
   
   vector<ArtifactEntry> amResults;
   vector<ModuleEntry> mmResults; //Ways to manage different types of classes
+  vector<ProjectEntry> pmResults; 
+  
   // Create AJAX objects to recieve information from web page.
   form_iterator op = cgi.getElement("operation");
   string operation = **op;
@@ -44,6 +48,25 @@ int main() {
   logfile.close();
   string output = "Error =- Operation not supported yet!";
 
+  if(operation == "Find Project"){
+    form_iterator searchString = cgi.getElement("find");
+    string search = **searchString;
+    
+    pmResults = pm.findProjectByName(search);
+    if (pmResults.size() > 0) {
+      output = "success";
+      for (int i = 0; i<pmResults.size(); i++) {
+	output += "~@$" + pmResults.at(i).name + "~@$"
+	  + pmResults.at(i).instructions + "~@$"
+	  + pmResults.at(i).projectID;
+
+      }
+    } else {
+      output = "No Match Found";
+    }
+
+  }
+  
   if (operation == "Find description") {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;

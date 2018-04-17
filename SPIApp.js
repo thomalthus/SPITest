@@ -73,9 +73,14 @@ function changeOperation(operation){
 	}
 	else if(operation=="Find Project"){
 		$('.editartifactdata').hide();
-		$('.editdata').hide();
+		$('.editartifactdata').hide();
 		$('.inputmodule').hide();
-		$('.inputartifact').hide();
+	        $('.inputartifact').hide();
+
+	    	$('.searchbox').show();
+		$('.results').show();
+	
+	    
 	}
 	else if(operation=="Add Artifact"){
 		$('.inputartifact').show();
@@ -148,6 +153,30 @@ function buildModuleTable(list) {
 	return result;
     }
 }
+
+
+function buildProjectTable(list) {
+    var a = list.split("~@$");
+    
+    if (a.length < 1) {
+	return "<h3>Internal Error</h3>";
+    } else if (a.length == 1) {
+	return "<h3>No Item Found</h3>";
+    } else {
+ 	var result = '<table id="modtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Project Name</th><th>Action</th><tr>';
+	var aLen = a.length;
+	for (var i = 1; i < aLen; i+=2) {
+	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i]+"cell'>"+a[i] +"</td>";
+	    
+	    result += "<td align=center><button type='button' ID='"+a[i + 1]+"' class='btn btn-primary btn-sm displayart'>Display artifacts</button></td></tr>";
+	}
+	result += "</table>";
+	
+	return result;
+    }
+}
+
+
 
 function processArtifactEdit(){
     $('#searchresults').empty();
@@ -227,7 +256,13 @@ function processResults(results) {
     console.log("Results:"+results);
     
 	$('#searchresults').empty();
-    if(operation == "Find Module"){
+
+
+	if(operation == "Find Project"){
+                $('#searchresults').append(buildProjectTable(results));	
+                
+	}
+	if(operation == "Find Module"){
 		$('#searchresults').append(buildModuleTable(results));	
 	}
 	

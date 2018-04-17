@@ -5,6 +5,8 @@ using namespace std;
 #define ENTRY_H
 class ModuleEntry;
 
+class ProjectEntry;
+
 class ArtifactEntry {
 public:
      ArtifactEntry();
@@ -30,5 +32,16 @@ public:
 	 string moduleID;
 
 };
+
+class ProjectEntry{
+public:
+         ProjectEntry();
+         ProjectEntry(string n, string d, string I);
+	 string name;
+	 string instructions;
+	 string projectID;
+
+};
+
 #endif /* ENTRY_H */
 

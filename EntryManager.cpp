@@ -131,8 +131,8 @@ vector<ArtifactEntry> EntryManager::findByName(string name) {
 
 }
 vector<ArtifactEntry> EntryManager::findByModule(string module) {
-
-  sql::Driver* driver = sql::mysql::get_driver_instance();
+  
+ sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
@@ -184,8 +184,38 @@ void EntryManager::addModule(string name){
 	
 }
 
-void EntryManager::editArtifactEntry(string artifactID,string name,string description,string stock, string module){
+vector<ProjectEntry> EntryManager::findProjectByName(string name){
+       
+ sql::Driver* driver = sql::mysql::get_driver_instance();
+  std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+  con->setSchema(database);
+  std::auto_ptr<sql::Statement> stmt(con->createStatement());
 
+  vector<ProjectEntry> list;
+
+  stmt->execute("CALL find_project('"+name+"')");
+
+  std::auto_ptr< sql::ResultSet > res;
+  do {
+    res.reset(stmt->getResultSet());
+    while (res->next()) {
+
+      ProjectEntry entry(res->getString("projectName"),res->getString("projectInstructions"),
+		       res->getString("projectID"));
+
+
+      list.push_back(entry);
+
+    }
+  } while (stmt->getMoreResults());
+  return list;
+
+  
+
+}
+
+void EntryManager::editArtifactEntry(string artifactID,string name,string description,string stock, string module){
+  
   sql::Driver* driver = sql::mysql::get_driver_instance();
   std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
   con->setSchema(database);
