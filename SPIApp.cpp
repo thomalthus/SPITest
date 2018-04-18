@@ -193,6 +193,45 @@ int main() {
     output="success";
   }
   
+  if(operation=="Add Project"){
+
+    form_iterator anameString = cgi.getElement("aprojname");
+    form_iterator ainstructionsString = cgi.getElement("aprojinstructions");
+
+
+    string addname=**anameString;
+    string addinstructions=**ainstructionsString;
+    
+    mm.addProject(addname, addinstructions);
+
+    output="success";
+  }
+  
+  if(operation=="Display Project Info"){
+    
+	form_iterator searchString = cgi.getElement("disprojinfo");
+   
+    string search = **searchString;
+    
+    amResults = am.displayProjectInfo(search);
+    
+	if (amResults.size() > 0) {
+		
+      output = "success";
+	  
+      for (int i = 0; i<amResults.size(); i++) {
+	output += "~@$" + amResults.at(i).name + "~@$"
+	  + amResults.at(i).description + "~@$"
+	  + amResults.at(i).stock + "~@$"
+	  + amResults.at(i).module + "~@$" + amResults.at(i).artifactID;
+
+      }
+    } else {
+      output = "No Match Found";
+    }  
+  }
+  
+  
   if(operation=="Display Artifact By Module"){
     
 	form_iterator searchString = cgi.getElement("disartmod");

@@ -9,11 +9,9 @@ $(document).ready(function () {
     $('.editartifactdata').hide();
 	$('.inputmodule').hide();
 	$('.inputartifact').hide();
-	$('.inputproject').hide();
     $("#search-btn").click(getMatches);
     $("#addArtifact-btn").click(addArtifact);
 	$("#addMod-btn").click(addModule);
-	$("#addProject-btn").click(addProject);
     operation = "Find Artifact By Name";
     $("#clear").click(clearResults);
 	$(document).on("click","#artobj-btn",function(){
@@ -48,8 +46,6 @@ function changeOperation(operation){
 		$('.editartifactdata').hide();
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
-		$('.inputproject').hide();
-
 		//$('.editdata').hide();
 		
 		$('.results').show();
@@ -61,7 +57,6 @@ function changeOperation(operation){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
 		//$('.editdata').hide();
-		$('.inputproject').hide();
 		$('.editartifactdata').hide();
 	
 		$('.searchbox').show();
@@ -80,48 +75,33 @@ function changeOperation(operation){
 		$('.editartifactdata').hide();
 		$('.editartifactdata').hide();
 		$('.inputmodule').hide();
-	    $('.inputartifact').hide();
-		$('.inputproject').hide();
+	        $('.inputartifact').hide();
 
-	    $('.searchbox').show();
+	    	$('.searchbox').show();
 		$('.results').show();
 	
 	    
 	}
 	else if(operation=="Add Artifact"){
 		$('.inputartifact').show();
-		$('.searchbox').show();
-		
 		
 		$('.editartifactdata').hide();
 		$('.editdata').hide();
+		$('.searchbox').hide();
 		$('.inputmodule').hide();
 		$('.results').hide();
-		$('.inputproject').hide();
 	}	
-	
     else if(operation == "Add Module"){
         $('.inputmodule').show();
-		$('.searchbox').show();
 		
 		$('.editartifactdata').hide();
-		$('.inputproject').hide();
 		$('.editdata').hide();
 		$('.searchbox').hide();
 		$('.inputartifact').hide();
 		$('.results').hide();
     }
 	else if(operation=="Add Project"){
-		$('.inputproject').show();
-		$('.searchbox').show();
-		
-		
-		$('.editartifactdata').hide();
-		$('.editdata').hide();
-		
-		$('.inputmodule').hide();
-		$('.inputartifact').hide();
-		$('.results').hide();
+	
 	}
     else{
 		$('.editdata').hide();
@@ -173,56 +153,6 @@ function buildModuleTable(list) {
 	return result;
     }
 }
-
-
-function buildProjectTable(list) {
-    var a = list.split("~@$");
-    
-    if (a.length < 1) {
-	return "<h3>Internal Error</h3>";
-    } else if (a.length == 1) {
-	return "<h3>No Item Found</h3>";
-    } else {
- 	var result = '<table id="projtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Project Name</th><th>Project Info</th><tr>';
-	var aLen = a.length;
-	for (var i = 1; i < aLen; i+=3) {
-	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i+2]+"cell'>"+a[i] +"</td>";
-	    
-	    result += "<td align=center><button type='button' ID='"+a[i+2]+
-		"' class='btn btn-primary btn-sm displayprojinfo'>Display info</button></td></tr>";
-	}
-	result += "</table>";
-	
-	return result;
-    }
-}
-
-
-function buildProjectInfoPanel(list) {
-    var a = list.split("~@$");
-    
-    if (a.length < 1) {
-	return "<h3>Internal Error</h3>";
-    } else if (a.length == 1) {
-	return "<h3>No Item Found</h3>";
-    } else {
- 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Description and Instructions</th><tr></table>';
-	//result +=  '<form> <outputText value "Instruction"></output> </form>';
-	result += '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><tr>';
-	
-	
-	var aLen = a.length;
-	for (var i = 1; i < aLen; i+=5) {
-	    result += "<tr><td class='artName'>"+a[i]+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
-	    //result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm editart'>Change</button> ";
-	    //result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm deleteart'>Delete</button></td></tr>";
-	}
-	result += "</table>";
-	
-	return result;
-    }
-}
-
 
 function processArtifactEdit(){
     $('#searchresults').empty();
@@ -296,70 +226,26 @@ function processArtifactDisplayByModule(){
 	
 }
 
-function processDisplayProjectInfo(){
-    console.log("Attempting to display artifacts and instructions associated with this project");
-    $('#searchresults').empty();
-	operation = "Display Project Info";
-    var id=$(this).attr('ID');
-	console.log(id);
-    $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disprojinfo='+$(this).attr('ID')+'&operation=' + operation,
-	dataType: 'text',
-	success: processResults,
-	error: function(){alert("Error: Something went wrong with processDisplayProjectInfo");}
-    });
-	
-}
-/*
-function processGetInstructions(){
-	$('#searchresults').empty();
-	operation = "Get Instructions";
-    var id=$(this).attr('ID');
-	console.log(id);
-    $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disprojinfo='+$(this).attr('ID')+'&operation=' + operation,
-	dataType: 'text',
-	success: processResults,
-	error: function(){alert("Error: Something went wrong with processDisplayProjectInfo");}
-    });
-	
-	
-}
-*/
-
 function processResults(results) {
     $('#editmessage').empty();
     $('#addmessage').empty();
     console.log("Results:"+results);
     
 	$('#searchresults').empty();
-
-	
-	if(operation == "Find Project"){
-                $('#searchresults').append(buildProjectTable(results));	
-                
-	}
-	if(operation == "Find Module"){
+    if(operation == "Find Module"){
 		$('#searchresults').append(buildModuleTable(results));	
 	}
 	
-	if(operation == "Find Artifact By Name" || 
-	operation == "Find Artifact By Description" ){
+	if(operation == "Find Artifact By Name" || operation == "Find Artifact By Description"){
 		$('#searchresults').append(buildArtifactTable(results));
-		
-	}
-	if(operation == "Display Project Info"){
-		$('#searchresults').append(buildProjectInfoPanel(results));
 		
 	}
 	if(operation == "Display Artifact By Module"){
 		$('#searchresults').append(buildArtifactTable(results));
 		operation = "Find Module";
-	}
-    $(".editart").click(processArtifactEdit);
+$(".editart").click(processArtifactEdit);
     $(".deleteart").click(processArtifactDelete);
 	$(".displayart").click(processArtifactDisplayByModule);
-	$(".displayprojinfo").click(processDisplayProjectInfo);
     $('#addmessage').text($('#addname').val()+" ADDED to Database");
     
 }
@@ -416,26 +302,6 @@ function addModule(){
     $.ajax({
 	url: '/cgi-bin/stantont_phoneAppComplete.cgi?amodname='+name
     +'&operation='+operation,
-	dataType: 'text',
-	success: processResults,
-	error: function(){alert("Error: Something went wrong");}
-    });
-
-}
-
-
-function addProject(){
-    console.log("Attempting to add an entry");
-    //console.log("Firstname:" + $('#addfirst').val());
-    $('#searchresults').empty();
-	console.log("name: "+$("#addProjName").val())
-	//desc = $("#addModDescription").val()
-	name = $("#addProjName").val()
-	instructions = $("#addProjInstructions").val()
-    $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?aprojname='+name
-    +'&aprojinstructions'+instructions +
-	'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
 	error: function(){alert("Error: Something went wrong");}

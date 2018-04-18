@@ -35,11 +35,14 @@ public:
     vector<ModuleEntry> findModule(string name); //Search module table
     vector<ArtifactEntry> displayArtifactsByModule(string name);
     vector<ProjectEntry> findProjectByName(string name);
-    void addModule(string name);    	
+    void addModule(string name);    
+	void addProject(string name, string instructions);
     void addEntry(string name,string description,string stock,string module);
     void editArtifactEntry(string artifactID,string first,string last,string phone,string type);
     //void deleteEntry(string artifactID);
     void deleteArtifact(string artifactID);
+	
+	vector<ArtifactEntry> displayProjectInfo(string projectID);
 private:
     const string url=HOST;
     const string user=USER;
