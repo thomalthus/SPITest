@@ -66,6 +66,39 @@ int main() {
     }
 
   }
+  if( operation == "Disassociate Artifact From Project"){
+	
+	form_iterator aArtIDString = cgi.getElement("disartid");
+    form_iterator aProjIDString = cgi.getElement("disprojid");
+    
+
+    string addArtID=**aArtIDString;
+    string addProjID=**aProjIDString;
+   
+    pm.disassociateArtWithProj(addArtID,addProjID);
+
+    output="success";
+	  
+	  
+  }
+  
+  if(operation == "Associate Art With Proj"){
+	  
+	form_iterator aArtIDString = cgi.getElement("aArtID");
+    form_iterator aProjIDString = cgi.getElement("aProjID");
+    
+
+    string addArtID=**aArtIDString;
+    string addProjID=**aProjIDString;
+   
+    pm.associateArtWithProj(addArtID,addProjID);
+
+    output="success";
+	  
+	  
+  }
+  
+  
   
   if (operation == "Find description") {
     form_iterator searchString = cgi.getElement("find");
@@ -202,8 +235,24 @@ int main() {
     string addname=**anameString;
     string addinstructions=**ainstructionsString;
     
-    mm.addProject(addname, addinstructions);
+    am.addProject(addname, addinstructions);
 
+    output="success";
+  }
+  
+  if(operation=="edit Project"){
+	form_iterator idtoeditString = cgi.getElement("editprojid");
+    string idedit=**idtoeditString;
+
+    form_iterator editnameString = cgi.getElement("editprojname");
+    form_iterator editinstructionsString = cgi.getElement("editprojinstructions");
+    
+
+    string editname=**editnameString;
+    string editinstructions=**editinstructionsString;
+    
+
+    pm.editProjectEntry(idedit,editname,editinstructions);
     output="success";
   }
   
@@ -218,9 +267,9 @@ int main() {
 	if (amResults.size() > 0) {
 		
       output = "success";
-	  
-      for (int i = 0; i<amResults.size(); i++) {
-	output += "~@$" + amResults.at(i).name + "~@$"
+	  output += "~@$" + amResults.at(0).name;
+      for (int i = 1; i<amResults.size(); i++) {
+	  output += "~@$" + amResults.at(i).name + "~@$"
 	  + amResults.at(i).description + "~@$"
 	  + amResults.at(i).stock + "~@$"
 	  + amResults.at(i).module + "~@$" + amResults.at(i).artifactID;

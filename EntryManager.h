@@ -38,7 +38,10 @@ public:
     void addModule(string name);    
 	void addProject(string name, string instructions);
     void addEntry(string name,string description,string stock,string module);
-    void editArtifactEntry(string artifactID,string first,string last,string phone,string type);
+    void editArtifactEntry(string artifactID,string name,string description,string stock, string module);
+	void editProjectEntry(string id,string name,string instructions);
+	void disassociateArtWithProj(string artID, string projID);
+	void associateArtWithProj(string artID, string projID);
     //void deleteEntry(string artifactID);
     void deleteArtifact(string artifactID);
 	

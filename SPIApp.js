@@ -4,20 +4,64 @@
 var operation;  // operation
 var deloperation;
 var editid;
+var modBoxAdded = false;
+var projectEditID;
+var disassociateID;
 //Edited this section :)
 $(document).ready(function () {
     $('.editartifactdata').hide();
 	$('.inputmodule').hide();
 	$('.inputartifact').hide();
 	$('.inputproject').hide();
+	$('.editprojectdata').hide();
+	
     $("#search-btn").click(getMatches);
+    $(document).keypress(function( event ) {
+  		if ( event.which == 13 ) {
+     		getMatches();
+     		$('.editartifactdata').hide();
+  		}
+  	});
+  	$('#addArtModule').keypress(function( event ) {
+  		operation = 'Find Available Mods';
+  		changeOperation(operation);
+  	});
     $("#addArtifact-btn").click(addArtifact);
 	$("#addMod-btn").click(addModule);
 	$("#addProject-btn").click(addProject);
+	$("#editproj-btn").click(editProject);
+	
+	//$("#addprojtoart").click(associateArtWithProj);
     operation = "Find Artifact By Name";
     $("#clear").click(clearResults);
+	
+	$(document).on("click",".editprojform",function(){
+		console.log("memes");
+		$('.editprojectdata').show();
+		
+	});
+	
+	$(document).on("click",".addprojtoart",function(){
+		console.log("memes");
+		$('.editprojectdata').show();
+		
+	});
+	
+	$(document).on("click",".editproj-btn",function(){
+		console.log("memes");
+		$('.editprojectdata').hide();
+		editProject();
+	});
+	
 	$(document).on("click","#artobj-btn",function(){
 		console.log("hey");
+		//addArtifact();
+	});
+	
+	$(document).on("click",".disassociate-btn",function(){
+		//console.log("hey");
+		disassociateID = $(this).attr('ID');
+		disassociateFromProj();
 		//addArtifact();
 	});
 	
@@ -66,6 +110,15 @@ function changeOperation(operation){
 	
 		$('.searchbox').show();
 		$('.results').show();
+	}
+	else if(operation=="Find Available Mods"){
+		if(!modBoxAdded){
+			modBoxAdded = true;
+			$('#main-jumbo').append('<div id=displayModsBox>yo</div>');
+			
+		}
+		operation = "Find Module";
+		getMatches();
 	}
 	else if(operation=="Find Module"){
 		$('.inputmodule').hide();
@@ -136,20 +189,20 @@ function buildArtifactTable(list) {
     var a = list.split("~@$");
     
     if (a.length < 1) {
-	return "<h3>Internal Error</h3>";
+		return "<h3>Internal Error</h3>";
     } else if (a.length == 1) {
-	return "<h3>No Item Found</h3>";
+		return "<h3>No Item Found</h3>";
     } else {
- 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
-	var aLen = a.length;
+		var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
+		var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
 	    result += "<tr><td class='artName'>"+a[i]+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
 	    result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm editart'>Change</button> ";
 	    result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm deleteart'>Delete</button></td></tr>";
 	}
-	result += "</table>";
+		result += "</table>";
 	
-	return result;
+		return result;
     }
 }
 
@@ -157,20 +210,20 @@ function buildModuleTable(list) {
     var a = list.split("~@$");
     
     if (a.length < 1) {
-	return "<h3>Internal Error</h3>";
+		return "<h3>Internal Error</h3>";
     } else if (a.length == 1) {
-	return "<h3>No Item Found</h3>";
+		return "<h3>No Item Found</h3>";
     } else {
- 	var result = '<table id="modtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Module Name</th><th>Action</th><tr>';
-	var aLen = a.length;
+		var result = '<table id="modtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Module Name</th><th>Action</th><tr>';
+		var aLen = a.length;
 	for (var i = 1; i < aLen; i+=2) {
 	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i]+"cell'>"+a[i] +"</td>";
 	    
 	    result += "<td align=center><button type='button' ID='"+a[i + 1]+"' class='btn btn-primary btn-sm displayart'>Display artifacts</button></td></tr>";
 	}
-	result += "</table>";
-	
-	return result;
+		result += "</table>";
+		
+		return result;
     }
 }
 
@@ -179,47 +232,54 @@ function buildProjectTable(list) {
     var a = list.split("~@$");
     
     if (a.length < 1) {
-	return "<h3>Internal Error</h3>";
+		return "<h3>Internal Error</h3>";
     } else if (a.length == 1) {
-	return "<h3>No Item Found</h3>";
+		return "<h3>No Item Found</h3>";
     } else {
- 	var result = '<table id="projtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Project Name</th><th>Project Info</th><tr>';
-	var aLen = a.length;
+		var result = '<table id="projtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Project Name</th><th>Project Info</th><tr>';
+		var aLen = a.length;
 	for (var i = 1; i < aLen; i+=3) {
 	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i+2]+"cell'>"+a[i] +"</td>";
 	    
 	    result += "<td align=center><button type='button' ID='"+a[i+2]+
 		"' class='btn btn-primary btn-sm displayprojinfo'>Display info</button></td></tr>";
 	}
-	result += "</table>";
-	
-	return result;
+		result += "</table>";
+		
+		return result;
     }
 }
 
 
 function buildProjectInfoPanel(list) {
     var a = list.split("~@$");
-    
+    var result;
     if (a.length < 1) {
-	return "<h3>Internal Error</h3>";
+		return "<h3>Internal Error</h3>";
     } else if (a.length == 1) {
-	return "<h3>No Item Found</h3>";
+		result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Description and Instructions</th><tr>';
+		result += "<tr><td class ='projInstructions'><pre>"+"Cannot display instructions for empty project. Add items!"+"</pre></td></tr></table>"
+		return result
     } else {
- 	var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Description and Instructions</th><tr></table>';
-	//result +=  '<form> <outputText value "Instruction"></output> </form>';
-	result += '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><tr>';
+		result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Description and Instructions</th><tr>';
+		result += "<tr><td class ='projInstructions'>"+a[1]+"</td></tr></table>"
+		//result +=  '<form> <outputText value "Instruction"></output> </form>';
+		result += '<table class="w3-table-all w3-hoverable" border="2">';
+		result += '<tr><th ID="artobj-btn">Object</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
+		
+		
+		var aLen = a.length;
+		for (var i = 2; i < aLen; i+=5) {
+			result += "<tr><td class='artName'>"+a[i]+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
+			result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm disassociate-btn'>Remove From Project</button> </td>";
+			//result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm deleteart'>Delete</button></td></tr>";
+		}
+		result += "</table>";
+		
+		result += "<table><td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm editprojform'>Edit Project</button></td>";
+		result += "<td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm addprojtoart'>Add Artifacts</button></td></table>";
 	
-	
-	var aLen = a.length;
-	for (var i = 1; i < aLen; i+=5) {
-	    result += "<tr><td class='artName'>"+a[i]+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
-	    //result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm editart'>Change</button> ";
-	    //result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm deleteart'>Delete</button></td></tr>";
-	}
-	result += "</table>";
-	
-	return result;
+		return result;
     }
 }
 
@@ -257,6 +317,23 @@ function editArtifactEntry(){
 	success: editDone(),
 	error: function(){alert("Error: Something went wrong");}
     });
+}
+
+function editProject(){
+    console.log("memes" + projectEditID);
+	//$('.editartifactdata').hide();
+    //console.log("Firstname:" + $('#editfirst').val() + "ID:" + editid);
+    $('#searchresults').empty();
+    
+	$.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?editprojid='+
+	projectEditID +'&editprojname='+$('#editProjName').val()+'&editprojinstructions='+
+	$('#editProjInstructions').val()+'&operation='+"edit Project",
+	dataType: 'text',
+	success: editDone(),
+	error: function(){alert("Error: Something went wrong");}
+    });
+	
 }
 
 
@@ -301,6 +378,7 @@ function processDisplayProjectInfo(){
     $('#searchresults').empty();
 	operation = "Display Project Info";
     var id=$(this).attr('ID');
+	projectEditID = $(this).attr('ID');
 	console.log(id);
     $.ajax({
 	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disprojinfo='+$(this).attr('ID')+'&operation=' + operation,
@@ -334,7 +412,8 @@ function processResults(results) {
     
 	$('#searchresults').empty();
 
-	
+	$('.editprojectdata').hide();
+
 	if(operation == "Find Project"){
                 $('#searchresults').append(buildProjectTable(results));	
                 
@@ -360,6 +439,13 @@ function processResults(results) {
     $(".deleteart").click(processArtifactDelete);
 	$(".displayart").click(processArtifactDisplayByModule);
 	$(".displayprojinfo").click(processDisplayProjectInfo);
+	/*
+	$("#search-btn").keypress(function(e)){
+		if(e.which == 13){
+			$("#go").click();
+		}
+	}
+	*/
     $('#addmessage').text($('#addname').val()+" ADDED to Database");
     
 }
@@ -422,8 +508,6 @@ function addModule(){
     });
 
 }
-
-
 function addProject(){
     console.log("Attempting to add an entry");
     //console.log("Firstname:" + $('#addfirst').val());
@@ -431,10 +515,11 @@ function addProject(){
 	console.log("name: "+$("#addProjName").val())
 	//desc = $("#addModDescription").val()
 	name = $("#addProjName").val()
-	instructions = $("#addProjInstructions").val()
+	var instructions = $("#addProjInstructions").val();
+	console.log("instructions: "+$("#addProjInstructions").val())
     $.ajax({
 	url: '/cgi-bin/stantont_phoneAppComplete.cgi?aprojname='+name
-    +'&aprojinstructions'+instructions +
+    +'&aprojinstructions='+instructions +
 	'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
@@ -443,5 +528,40 @@ function addProject(){
 
 }
 
+/*
+function associateArtWithProj(){
+    
+	console.log("Attempting to display artifacts and instructions associated with this project");
+    $('#searchresults').empty();
+	operation = "Display Project Info";
+    var id=$(this).attr('ID');
+	projectEditID = $(this).attr('ID');
+	console.log(id);
+    $.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disprojinfo='+$(this).attr('ID')+'&operation=' + operation,
+	dataType: 'text',
+	success: processResults,
+	error: function(){alert("Error: Something went wrong with processDisplayProjectInfo");}
+    });
+	
+
+}
+*/
+
+function disassociateFromProj(){
+	console.log("Attempting to disassociate art from project");
+    $('#searchresults').empty();
+	operation = "Disassociate Artifact From Project";
+    //var id=$(this).attr('ID');
+	
+	console.log("artID: " + disassociateID + " projID: " + projectEditID);
+    $.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?disprojid='+projectEditID+'&disartid='+disassociateID+'&operation=' + operation,
+	dataType: 'text',
+	success: processResults,
+	error: function(){alert("Error: Something went wrong with disassociateFromProj");}
+    });
+	
+}
 
 

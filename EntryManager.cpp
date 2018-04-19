@@ -7,6 +7,27 @@ EntryManager::EntryManager() {
 
 }
 
+void EntryManager::associateArtWithProj(string artID, string projID){
+	
+	sql::Driver* driver = sql::mysql::get_driver_instance();
+	std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+	con->setSchema(database);
+	std::auto_ptr<sql::Statement> stmt(con->createStatement());	
+	
+	stmt->execute("CALL add_ArtifactsProjects('"+artID+"','"+projID+"')");
+	
+}
+
+void EntryManager::disassociateArtWithProj(string artID, string projID){
+	
+	sql::Driver* driver = sql::mysql::get_driver_instance();
+	std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+	con->setSchema(database);
+	std::auto_ptr<sql::Statement> stmt(con->createStatement());	
+	
+	stmt->execute("CALL delete_ArtifactsProjects('"+artID+"','"+projID+"')");
+	
+}
 
 vector<ModuleEntry> EntryManager::findModule(string name) {
 
@@ -197,7 +218,7 @@ vector<ArtifactEntry> EntryManager::findByDescription(string description) {
 }
 
 vector<ArtifactEntry> EntryManager::displayProjectInfo(string projectID) {
-
+	bool instructionsAdded = false;
     sql::Driver* driver = sql::mysql::get_driver_instance();
     std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
     con->setSchema(database);
@@ -210,13 +231,22 @@ vector<ArtifactEntry> EntryManager::displayProjectInfo(string projectID) {
     std::auto_ptr< sql::ResultSet > res;
     do {
       res.reset(stmt->getResultSet());
-      while (res->next()) {
-
-          ArtifactEntry entry(res->getString("name"),res->getString("description"),
+	  
+	  //Occupy first elt of list with entry that stores instructions for project
+	  
+	  while (res->next()) {
+		
+		if(!instructionsAdded){	
+			ArtifactEntry projectInstructions(res->getString("projectInstructions"), "","","","");
+			list.push_back(projectInstructions);	
+			instructionsAdded = true;
+		}
+			
+        ArtifactEntry entry(res->getString("name"),res->getString("description"),
 			   res->getString("stock"),res->getString("module"), res->getString("artifactID"));
 
 	  
-	  list.push_back(entry);
+		list.push_back(entry);
 
       }
     } while (stmt->getMoreResults());
@@ -263,6 +293,16 @@ void EntryManager::editArtifactEntry(string artifactID,string name,string descri
   std::auto_ptr<sql::Statement> stmt(con->createStatement());
   
   stmt->execute("CALL edit_entry('"+artifactID+"','"+name+"','"+description+"','"+stock+"','"+module+"')");
+}
+
+void EntryManager::editProjectEntry(string ID,string name,string instructions){
+  
+  sql::Driver* driver = sql::mysql::get_driver_instance();
+  std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+  con->setSchema(database);
+  std::auto_ptr<sql::Statement> stmt(con->createStatement());
+  
+  stmt->execute("CALL edit_project('"+name+"','"+instructions+"','"+ID+"')");
 }
 /*
 void EntryManager::deleteEntry(string artifactID){
