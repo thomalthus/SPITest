@@ -219,6 +219,7 @@ vector<ArtifactEntry> EntryManager::findByDescription(string description) {
 
 vector<ArtifactEntry> EntryManager::displayProjectInfo(string projectID) {
 	bool instructionsAdded = false;
+	
     sql::Driver* driver = sql::mysql::get_driver_instance();
     std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
     con->setSchema(database);
@@ -241,7 +242,13 @@ vector<ArtifactEntry> EntryManager::displayProjectInfo(string projectID) {
 			list.push_back(projectInstructions);	
 			instructionsAdded = true;
 		}
-			
+		/*
+		if(!nameAdded){	
+			ArtifactEntry projectInstructions(res->getString("projectName"), "","","","");
+			list.push_back(projectInstructions);	
+			nameAdded = true;
+		}	
+		*/
         ArtifactEntry entry(res->getString("name"),res->getString("description"),
 			   res->getString("stock"),res->getString("module"), res->getString("artifactID"));
 
@@ -328,5 +335,34 @@ void EntryManager::deleteArtifact(string artifactID){
   stmt->execute("CALL delete_artifact('"+artifactID+"')");
 
 }
+
+void EntryManager::deleteModule(string modID){
+
+  sql::Driver* driver = sql::mysql::get_driver_instance();
+  std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+  con->setSchema(database);
+  std::auto_ptr<sql::Statement> stmt(con->createStatement());
+
+
+  stmt->execute("CALL delete_module('"+modID+"')");
+
+}
+
+
+void EntryManager::deleteProject(string projectID){
+
+  sql::Driver* driver = sql::mysql::get_driver_instance();
+  std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+  con->setSchema(database);
+  std::auto_ptr<sql::Statement> stmt(con->createStatement());
+
+
+  stmt->execute("CALL delete_project('"+projectID+"')");
+
+}
+
+
+
+
 
 

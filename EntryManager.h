@@ -44,6 +44,10 @@ public:
 	void associateArtWithProj(string artID, string projID);
     //void deleteEntry(string artifactID);
     void deleteArtifact(string artifactID);
+	void deleteProject(string projectID);
+	void deleteModule(string modID);
+
+	
 	
 	vector<ArtifactEntry> displayProjectInfo(string projectID);
 private:

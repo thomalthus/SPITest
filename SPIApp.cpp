@@ -4,7 +4,8 @@
 #include <map>
 #include <vector>
 #include <algorithm>
-#include <boost/algorithm/string.hpp>    
+#include <boost/algorithm/string.hpp>  
+#include <iomanip>  
 // Stuff for AJAX
 #include "cgicc/Cgicc.h"
 #include "cgicc/HTTPHTMLHeader.h"
@@ -24,7 +25,7 @@ void sortArtByName(vector<ArtifactEntry> &a);
 bool compareArtByName(ArtifactEntry a, ArtifactEntry b);
 void sortArtByDescription(vector<ArtifactEntry> &a);
 bool compartArtByDescription(ArtifactEntry a, ArtifactEntry b);
-
+string url_encode(string &value);
 
 
 int main() {
@@ -66,6 +67,8 @@ int main() {
     }
 
   }
+  
+  
   if( operation == "Disassociate Artifact From Project"){
 	
 	form_iterator aArtIDString = cgi.getElement("disartid");
@@ -84,8 +87,8 @@ int main() {
   
   if(operation == "Associate Art With Proj"){
 	  
-	form_iterator aArtIDString = cgi.getElement("aArtID");
-    form_iterator aProjIDString = cgi.getElement("aProjID");
+	form_iterator aArtIDString = cgi.getElement("aartid");
+    form_iterator aProjIDString = cgi.getElement("aprojid");
     
 
     string addArtID=**aArtIDString;
@@ -121,7 +124,7 @@ int main() {
   }
 
 
-  if (operation == "Find Artifact By Name") {
+  if (operation == "Find Item By Name" || operation == "Add Artifacts to Project") {
 
 	int j = 5;
 	form_iterator searchString = cgi.getElement("find");
@@ -150,7 +153,7 @@ int main() {
 	
   }
   
-  if (operation == "Find Artifact By Description") {
+  if (operation == "Find Item By Description") {
 
 	
 	form_iterator searchString = cgi.getElement("find");
@@ -195,18 +198,18 @@ int main() {
   }
   
 
-  if(operation=="Add Artifact"){
+  if(operation=="Add Item"){
 
     form_iterator anameString = cgi.getElement("aname");
     form_iterator adescripString = cgi.getElement("adescrip");
     form_iterator addstockString = cgi.getElement("astock");
     form_iterator addmoduleString = cgi.getElement("amodule");
-
+	
     string addname=**anameString;
     string adddescrip=**adescripString;
     string addstock=**addstockString;
     string addmodule=**addmoduleString;
-
+	addname = url_encode(addname);
     am.addEntry(addname,adddescrip,addstock,addmodule);
 
     output="success";
@@ -313,6 +316,22 @@ int main() {
     output="success";
   }
   
+  if(operation=="delete Module"){
+    form_iterator idtodeleteString = cgi.getElement("deletemodid");
+    string iddelete=**idtodeleteString;
+
+    am.deleteModule(iddelete);
+    output="success";
+  }
+  
+  if(operation=="delete Project"){
+    form_iterator idtodeleteString = cgi.getElement("deleteprojid");
+    string iddelete=**idtodeleteString;
+
+    am.deleteProject(iddelete);
+    output="success";
+  }
+  
   if(operation=="edit Artifact"){
     form_iterator idtoeditString = cgi.getElement("editartid");
     string idedit=**idtoeditString;
@@ -326,7 +345,7 @@ int main() {
     string editdescrip=**editdescripString;
     string editstock=**editstockString;
     string editmodule=**editmoduleString;
-
+	editname = url_encode(editname);
 
     am.editArtifactEntry(idedit,editname,editdescrip,editstock,editmodule);
     output="success";
@@ -382,4 +401,25 @@ void sortArtByDescription(vector<ArtifactEntry> &a) {
 
 }
 
+string url_encode(string &value) {
+    ostringstream escaped;
+    escaped.fill('0');
+    escaped << hex;
 
+    for (string::const_iterator i = value.begin(), n = value.end(); i != n; ++i) {
+        string::value_type c = (*i);
+
+        // Keep alphanumeric and other accepted characters intact
+        if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+            escaped << c;
+            continue;
+        }
+
+        // Any other characters are percent-encoded
+        escaped << uppercase;
+        escaped << '%' << setw(2) << int((unsigned char) c);
+        escaped << nouppercase;
+    }
+
+    return escaped.str();
+}
