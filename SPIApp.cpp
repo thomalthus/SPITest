@@ -10,7 +10,7 @@
 #include "cgicc/Cgicc.h"
 #include "cgicc/HTTPHTMLHeader.h"
 #include "cgicc/HTMLClasses.h"
-
+#include <curl/curl.h>
 #include "EntryManager.h"
 #include "Entry.h"
 
@@ -49,7 +49,7 @@ int main() {
   logfile.close();
   string output = "Error =- Operation not supported yet!";
 
-  if(operation == "Find Project"){
+  if(operation == "Find Activity"){
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
@@ -69,7 +69,7 @@ int main() {
   }
   
   
-  if( operation == "Disassociate Artifact From Project"){
+  if( operation == "Disassociate Artifact From Activity"){
 	
 	form_iterator aArtIDString = cgi.getElement("disartid");
     form_iterator aProjIDString = cgi.getElement("disprojid");
@@ -84,6 +84,9 @@ int main() {
 	  
 	  
   }
+  
+   
+  
   
   if(operation == "Associate Art With Proj"){
 	  
@@ -124,7 +127,7 @@ int main() {
   }
 
 
-  if (operation == "Find Item By Name" || operation == "Add Artifacts to Project") {
+  if (operation == "Find Item By Name" || operation == "Add Artifacts to Activity") {
 
 	int j = 5;
 	form_iterator searchString = cgi.getElement("find");
@@ -178,8 +181,9 @@ int main() {
     }
 	
   }
+  
 	
-  if (operation == "Find Module") {
+  if (operation == "Find Storage Space" || operation == "Find Available Mods") {
     form_iterator searchString = cgi.getElement("find");
     string search = **searchString;
     
@@ -210,12 +214,15 @@ int main() {
     string addstock=**addstockString;
     string addmodule=**addmoduleString;
 	addname = url_encode(addname);
+	adddescrip = url_encode(adddescrip);
+	addstock= url_encode(addstock);
+	addmodule = url_encode(addmodule);
     am.addEntry(addname,adddescrip,addstock,addmodule);
 
     output="success";
   }
   
-  if(operation=="Add Module"){
+  if(operation=="Add Storage Space"){
 
     form_iterator anameString = cgi.getElement("amodname");
     //form_iterator adescripString = cgi.getElement("amoddescrip");
@@ -229,7 +236,7 @@ int main() {
     output="success";
   }
   
-  if(operation=="Add Project"){
+  if(operation=="Add Activity"){
 
     form_iterator anameString = cgi.getElement("aprojname");
     form_iterator ainstructionsString = cgi.getElement("aprojinstructions");
@@ -243,7 +250,7 @@ int main() {
     output="success";
   }
   
-  if(operation=="edit Project"){
+  if(operation=="edit Activity"){
 	form_iterator idtoeditString = cgi.getElement("editprojid");
     string idedit=**idtoeditString;
 
@@ -259,7 +266,7 @@ int main() {
     output="success";
   }
   
-  if(operation=="Display Project Info"){
+  if(operation=="Display Activity Info"){
     
 	form_iterator searchString = cgi.getElement("disprojinfo");
    
@@ -284,7 +291,7 @@ int main() {
   }
   
   
-  if(operation=="Display Artifact By Module"){
+  if(operation=="Display Artifact By Storage Space"){
     
 	form_iterator searchString = cgi.getElement("disartmod");
    
@@ -316,7 +323,7 @@ int main() {
     output="success";
   }
   
-  if(operation=="delete Module"){
+  if(operation=="delete Storage Space"){
     form_iterator idtodeleteString = cgi.getElement("deletemodid");
     string iddelete=**idtodeleteString;
 
@@ -324,7 +331,7 @@ int main() {
     output="success";
   }
   
-  if(operation=="delete Project"){
+  if(operation=="delete Activity"){
     form_iterator idtodeleteString = cgi.getElement("deleteprojid");
     string iddelete=**idtodeleteString;
 
@@ -423,3 +430,4 @@ string url_encode(string &value) {
 
     return escaped.str();
 }
+

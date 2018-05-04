@@ -14,8 +14,8 @@ var projName;
 var projInstructions;
 var count = 0;
 var saveLength;
-var attempted = false;
-//Edited this section :)
+var attempted = false; //for making sure tables display correctly
+
 $(document).ready(function () {
     $('.editartifactdata').hide();
 	$('.inputmodule').hide();
@@ -25,20 +25,52 @@ $(document).ready(function () {
 	$('.projsearchbox').hide();
 	operation = "Find Item By Name";
     $("#search-btn").click(getMatches);
-    /*
+    
 	$(document).keypress(function( event ) {
   		if ( event.which == 13 ) {
      		getMatches();
      		$('.editartifactdata').hide();
   		}
   	});
-	*/
-	
-	
-    $("#addArtifact-btn").click(addArtifact);
+	$("#addArtModule").on('keyup', function() {
+		if(!modBoxAdded){
+			modBoxAdded = true;
+			$('#main-jumbo').append('<div id=displayModsBox></div>');
+			
+		}
+  		operation = "Find Storage Space";
+  		getModMatches();
+  	});
+	$(document).on("click","#addArtifact-btn",function(){
+			operation = "Add Item"
+			addArtifact();
+	});
+    
 	$("#addMod-btn").click(addModule);
-	$("#addProject-btn").click(addProject);
-	
+	$(document).on("click","#projsearch-btn",function(){
+		operation = "Add Artifacts to Activity";
+		var zad = $('#projsearch').val()
+		console.log("Search Query: " + zad);
+		getAssociateMatches(zad);
+		operation = "Associate Art With Proj";
+
+		//$('#searchresults').append(buildAddArtifactToProjectTable(results));	
+		
+	});
+	$(document).on("click","#addProject-btn",function(){
+		addProject();
+		operation = "Find Activity";
+		changeOperation(operation);
+		getMatches();
+		$('#searchresults').append(buildProjectTable(results));	
+
+		
+	});
+	$(document).on("click",".findModResults",function(){
+		divText = $(this).text();
+		console.log("hey");
+		$("#addArtModule").val(divText);
+	});
 	
     $("#clear").click(clearResults);
 	
@@ -49,6 +81,15 @@ $(document).ready(function () {
 		getMatches();
 		//console.log(id);
 	});
+	
+	$(document).on("click",".deletemod",function(){
+		deleteid=$(this).attr('ID');
+		processModuleDelete();
+		getMatches();
+		//console.log(id);
+	});
+	
+	
 	
 	$(document).on("click",".addarttoprojtable",function(){
 		
@@ -73,7 +114,7 @@ $(document).ready(function () {
 		}
 		$('.projsearchbox').hide();
 
-		operation = "Display Project Info";
+		operation = "Display Activity Info";
 		console.log("onclick projectEditID: " + projectEditID);
 		saveID = projectEditID;
 		processDisplayProjectInfo();
@@ -102,7 +143,7 @@ $(document).ready(function () {
 		
 		$('.searchbox').hide();
 		$('.projsearchbox').show();
-		operation = "Add Artifacts to Project";
+		operation = "Add Artifacts to Activity";
 			
 		getMatches();
 		
@@ -126,7 +167,7 @@ $(document).ready(function () {
 		disassociateID = $(this).attr('ID');
 		disassociateFromProj();
 		
-		operation = "Display Project Info";
+		operation = "Display Activity Info";
 		
 		processDisplayProjectInfo();
 		
@@ -148,7 +189,7 @@ function changeOperation(operation){
 	$('.editartifactdata').hide();
 	$('.projsearchbox').hide();
 	$('.inputartifact').hide();
-
+	$('#displayModsBox').hide();
 	if(operation=="Find Item By Name"){
 		$('.editartifactdata').hide();
 		$('.inputmodule').hide();
@@ -172,7 +213,7 @@ function changeOperation(operation){
 		$('.searchbox').show();
 		$('.results').show();
 	}
-	else if(operation=="Add Artifacts to Project"){
+	else if(operation=="Add Artifacts to Activity"){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
 		//$('.editdata').hide();
@@ -184,16 +225,7 @@ function changeOperation(operation){
 		$('.results').show();
 		
 	}
-	else if(operation=="Find Available Mods"){
-		if(!modBoxAdded){
-			modBoxAdded = true;
-			$('#main-jumbo').append('<div id=displayModsBox>yo</div>');
-			
-		}
-		operation = "Find Module";
-		getMatches();
-	}
-	else if(operation=="Find Module"){
+	else if(operation=="Find Storage Space"){
 		$('.inputmodule').hide();
 		$('.inputartifact').hide();
 		$('.editartifactdata').hide();
@@ -203,7 +235,7 @@ function changeOperation(operation){
 		$('.searchbox').show();
 		$('.results').show();
 	}
-	else if(operation=="Find Project"){
+	else if(operation=="Find Activity"){
 		$('.editartifactdata').hide();
 		$('.editartifactdata').hide();
 		$('.inputmodule').hide();
@@ -225,8 +257,11 @@ function changeOperation(operation){
 		$('.results').hide();
 		$('.inputproject').hide();
 	}	
+	else if(operation == "Find Storage Space"){
+		
+	}
 	
-    else if(operation == "Add Module"){
+    else if(operation == "Add Storage Space"){
         $('.inputmodule').show();
 		$('.searchbox').show();
 		
@@ -237,7 +272,7 @@ function changeOperation(operation){
 		$('.inputartifact').hide();
 		$('.results').hide();
     }
-	else if(operation=="Add Project"){
+	else if(operation=="Add Activity"){
 		$('.inputproject').show();
 		$('.searchbox').hide();
 		
@@ -266,10 +301,10 @@ function buildArtifactTable(list) {
     } else if (a.length == 1) {
 		return "<h3>No Item Found</h3>";
     } else {
-		var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Item</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
+		var result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Item</th><th>Description</th><th>Stock</th><th>Storage Space</th><th>Action</th><tr>';
 		var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
-	    result += "<tr><td class='artName'>"+decodeURI(a[i]).replace(/\"/g,"")+"</td><td class='artDescrip'>"+decodeURI(a[i+1])+"</td><td class='artStock'>"+decodeURI(a[i+2])+"</td><td class='artMod'>"+decodeURI(a[i+3])+"</td>";
+	    result += "<tr><td class='artName'>"+decode_from_URI(a[i])+"</td><td class='artDescrip'>"+decode_from_URI(a[i+1])+"</td><td class='artStock'>"+decode_from_URI(a[i+2])+"</td><td class='artMod'>"+(a[i+3])+"</td>";
 	    result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm editart'>Change</button> ";
 	    result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm deleteart'>Delete</button></td></tr>";
 	}
@@ -287,7 +322,7 @@ function buildModuleTable(list) {
     } else if (a.length == 1) {
 		return "<h3>No Item Found</h3>";
     } else {
-		var result = '<table id="modtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Module Name</th><th>Action</th><tr>';
+		var result = '<table id="modtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Storage Space Name</th><th>Action</th><tr>';
 		var aLen = a.length;
 	for (var i = 1; i < aLen; i+=2) {
 	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i]+"cell'>"+a[i] +"</td>";
@@ -310,10 +345,10 @@ function buildProjectTable(list) {
     } else if (a.length == 1) {
 		return "<h3>No Item Found</h3>";
     } else {
-		var result = '<table id="projtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Project Name</th><th>Project Info</th><tr>';
+		var result = '<table id="projtable" class="w3-table-all w3-hoverable" border="2"><tr><th>Activity Name</th><th>Activity Info</th><tr>';
 		var aLen = a.length;
 	for (var i = 1; i < aLen; i+=3) {
-	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i+2]+"cell'>"+decodeURI(a[i]) +"</td>";
+	    result += "<tr ID='"+a[i]+"row'><td class='first' ID='"+a[i+2]+"cell'>"+decode_from_URI(a[i]) +"</td>";
 	    
 	    result += "<td align=center><button type='button' ID='"+a[i+2]+
 		"' class='btn btn-primary btn-sm displayprojinfo'>Display info</button>";
@@ -349,8 +384,8 @@ function buildProjectInfoPanel(list) {
 			//console.log("a length: " + a.length);
 			//console.log("a[0]: " + a[0]);
 			result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Description and Instructions</th><tr>';
-			result += "<tr><td class ='projInstructions'><pre>"+"Cannot display instructions for empty project. Add items!"+"</pre></td></tr></table>"
-			result += "<table><td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm editprojform'>Edit Project</button></td>";
+			result += "<tr><td class ='projInstructions'><pre>"+"Cannot display instructions for empty activity. Add items!"+"</pre></td></tr></table>"
+			result += "<table><td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm editprojform'>Edit Activity</button></td>";
 			result += "<td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm addprojtoart'>Add Items</button></td></table>";
 			saveID = projectEditID;
 			attempted = false
@@ -385,21 +420,21 @@ function buildProjectInfoPanel(list) {
 		
 		console.log("str: " + str);
 		result = '<table class="w3-table-all w3-hoverable" border="2"><tr><th>Description and Instructions</th><tr>';
-		result += "<tr><td class ='projInstructions'>"+str+"</td></tr></table>"
+		result += "<tr><td class ='projInstructions'>"+decode_from_URI(str)+"</td></tr></table>"
 		
 		result += '<table class="w3-table-all w3-hoverable" border="2">';
-		result += '<tr><th ID="artobj-btn">Item</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
+		result += '<tr><th ID="artobj-btn">Item</th><th>Description</th><th>Stock</th><th>Storage Space</th><th>Action</th><tr>';
 		
 		
 		var aLen = a.length;
 		for (var i = 2; i < aLen; i+=5) {
-			result += "<tr><td class='artName'>"+decodeURI(a[i]).replace(/"/g,"")+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
-			result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm disassociate-btn'>Remove From Project</button> </td>";
+			result += "<tr><td class='artName'>"+decode_from_URI(a[i])+"</td><td class='artDescrip'>"+decode_from_URI(a[i+1])+"</td><td class='artStock'>"+decode_from_URI(a[i+2])+"</td><td class='artMod'>"+a[i+3]+"</td>";
+			result += "<td><button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm disassociate-btn'>Remove From Activity</button> </td>";
 			//result += "<button type='button' ID='"+a[i+4]+"' class='btn btn-primary btn-sm deleteart'>Delete</button></td></tr>";
 		}
 		result += "</table>";
 		
-		result += "<table><td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm editprojform'>Edit Project</button></td>";
+		result += "<table><td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm editprojform'>Edit Activity</button></td>";
 		result += "<td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm addprojtoart'>Add Items</button></td></table>";
 		
 		return result;
@@ -417,10 +452,10 @@ function buildAddArtifactToProjectTable(list) {
     } else {
 		var result = '<table class="w3-table-all w3-hoverable" border="2"><tr>'
 		result +="<td button type='button' ID='"+projectEditID +"'class='btn btn-primary btn-sm associateartifacts'>Add Item</button></td><tr></table>";
-		result += '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Item</th><th>Description</th><th>Stock</th><th>Module</th><th>Action</th><tr>';
+		result += '<table class="w3-table-all w3-hoverable" border="2"><tr><th ID="artobj-btn">Item</th><th>Description</th><th>Stock</th><th>Storage Space</th><th>Action</th><tr>';
 		var aLen = a.length;
 	for (var i = 1; i < aLen; i+=5) {
-	    result += "<tr><td class='artName'>"+decodeURI(a[i])+"</td><td class='artDescrip'>"+a[i+1]+"</td><td class='artStock'>"+a[i+2]+"</td><td class='artMod'>"+a[i+3]+"</td>";
+	    result += "<tr><td class='artName'>"+decode_from_URI(a[i])+"</td><td class='artDescrip'>"+decode_from_URI(a[i+1])+"</td><td class='artStock'>"+decode_from_URI(a[i+2])+"</td><td class='artMod'>"+a[i+3]+"</td>";
 	    
 	    result += "<td><input type='checkbox' ID='"+a[i+4]+"' class='btn btn-primary btn-sm addarttoprojtable'>Add</td></tr>";
 	}
@@ -445,8 +480,9 @@ function processArtifactEdit(){
     $('#editArtModule').val( $(row).find('.artMod').text());
 }
 
-function editDone() {
-    //$('#editmessage').text($('#editArtName').val()+" with stock "+$('#editArtStock').val()+ " SAVED");
+function editArtifactDone() {
+	
+    $('#editartifactmessage').text($('#editArtName').val()+" with stock "+$('#editArtStock').val()+ " SAVED");
 }
 
 function editArtifactEntry(){
@@ -456,15 +492,17 @@ function editArtifactEntry(){
     $('#searchresults').empty();
     $.ajax({
 	url: '/cgi-bin/stantont_phoneAppComplete.cgi?editartid='+
-	editid +'&editartname='+encodeURIComponent(JSON.stringify($('#editArtName').val()))+'&editartdescrip='+
-	$('#editArtDescription').val()+'&editartstock='+
-	$('#editArtStock').val()+'&editartmod='+
+	editid +'&editartname='+encode_to_URI($('#editArtName').val())+'&editartdescrip='+
+	encode_to_URI($('#editArtDescription').val())+'&editartstock='+
+	encode_to_URI($('#editArtStock').val())+'&editartmod='+
 	$('#editArtModule').val()+'&operation='+"edit Artifact",
 	dataType: 'text',
-	success: editDone(),
+	success: editArtifactDone(),
 	error: function(){alert("Error: Must add artifact to an already-existing storage module");}
     });
 }
+
+
 
 function processProjectEdit(){
 	$('#searchresults').empty();
@@ -478,7 +516,7 @@ function processProjectEdit(){
 	
     $('#editProjName').val(projName);
     
-    var str = projInstructions.replace(/~~~1~~~/g, '\n');
+    var str = decode_from_URI(projInstructions.replace(/~~~1~~~/g, '\n'));
 	$('#editProjInstructions').val(str);
 	
 }
@@ -496,11 +534,11 @@ function editProject(){
     processDisplayProjectInfo();
 	$.ajax({
 	url: '/cgi-bin/stantont_phoneAppComplete.cgi?editprojid='+
-	projectEditID +'&editprojname='+$('#editProjName').val()+'&editprojinstructions='+
-	str
-	+'&operation='+"edit Project",
+	projectEditID +'&editprojname='+encode_to_URI($('#editProjName').val())+'&editprojinstructions='+
+	encode_to_URI(str)
+	+'&operation='+"edit Activity",
 	dataType: 'text',
-	success: editDone(),
+	
 	error: function(){alert("Error: Something went wrong");}
     });
 	
@@ -538,7 +576,7 @@ function processModuleDelete(){
     var id=$(this).attr('ID');
 	console.log(id);
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deletemodid='+$(this).attr('ID')+'&operation=' + "delete Module",
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deletemodid='+deleteid+'&operation=' + "delete Storage Space",
 	dataType: 'text',
 	
 	error: function(){alert("Error: Must Move all items in this storage module to another module");}
@@ -558,18 +596,21 @@ function processProjectDelete(){
     var id=$(this).attr('ID');
 	console.log(id);
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteprojid='+$(this).attr('ID')+'&operation=' + "delete Project",
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?deleteprojid='+$(this).attr('ID')+'&operation=' + "delete Activity",
 	dataType: 'text',
 	
 	error: function(){alert("Error: Something went wrong with processDelete");}
     });
-	
+	operation = "Find Activity"
+	changeOperation(operation);
+	getMatches();
+	$('#searchresults').append(buildProjectTable(results));
 }
 
 function processArtifactDisplayByModule(){
     //console.log("Attempting to display artifacts associated with this module");
     $('#searchresults').empty();
-	operation = "Display Artifact By Module";
+	operation = "Display Artifact By Storage Space";
     var id=$(this).attr('ID');
 	console.log(id);
     $.ajax({
@@ -586,7 +627,7 @@ function processDisplayProjectInfo(){
     $('.searchbox').hide();
 
 	$('#searchresults').empty();
-	operation = "Display Project Info";
+	operation = "Display Activity Info";
     projectEditID = $(this).attr('ID');
 	console.log("before undefined check projectEditId: " + projectEditID + " saveID: " + saveID);
 	if(projectEditID === undefined){
@@ -608,8 +649,17 @@ function processDisplayProjectInfo(){
 
 
 function processResults(results) {
-    $('#editmessage').empty();
-    $('#addmessage').empty();
+    $('#editartifactmessage').empty();
+	$('#editprojectmessage').empty();
+
+    $('#addartmessage').empty();
+	$('#addmodmessage').empty();
+	
+	$('#addArtName').val("");
+	$('#addArtDescription').val("");
+	$('#addArtStock').val("");
+	$('#addArtModule').val("");
+	
     console.log("Results:"+results);
     
 	$('#searchresults').empty();
@@ -617,11 +667,11 @@ function processResults(results) {
 	$('.editprojectdata').hide();
 	$('.editartifactdata').hide();
 
-	if(operation == "Find Project"){
-                $('#searchresults').append(buildProjectTable(results));	
+	if(operation == "Find Activity"){
+        $('#searchresults').append(buildProjectTable(results));	
                 
 	}
-	if(operation == "Find Module"){
+	if(operation == "Find Storage Space"){
 		$('#searchresults').append(buildModuleTable(results));	
 	}
 	
@@ -635,13 +685,13 @@ function processResults(results) {
 
 		
 	}
-	if(operation == "Display Project Info"){
+	if(operation == "Display Activity Info"){
 		$('#searchresults').append(buildProjectInfoPanel(results));
 		
 	}
-	if(operation == "Display Artifact By Module"){
+	if(operation == "Display Artifact By Storage Space"){
 		$('#searchresults').append(buildArtifactTable(results));
-		operation = "Find Module";
+		operation = "Find Storage Space";
 	}
     $(".editart").click(processArtifactEdit);
     
@@ -651,18 +701,22 @@ function processResults(results) {
 	
 	//$(".deleteart").click(processArtifactDelete);
 	
-	$(".deletemod").click(processModuleDelete);
+	
 	
 	$(".deleteproj").click(processProjectDelete);
 	/*
-	$("#search-btn").keypress(function(e)){
+	$("#search-btn").keypress(function(e){
 		if(e.which == 13){
 			$("#go").click();
 		}
-	}
+	});
 	*/
-   
-    
+	if(operation == "Add Storage Space"){
+		$('#addmodmessage').text($('#addModName').val()+" ADDED");
+	}
+	if(operation == "Add Item"){
+		$('#addartmessage').text($('#addArtName').val()+" ADDED");
+	}
 }
 
 function clearResults() {
@@ -671,6 +725,7 @@ function clearResults() {
 
 function getMatches(){
 	console.log("Getting Matches");
+	console.log("search value: " +$('#search').val());
     $('.editdata').hide();
     $('#searchresults').empty();
     $.ajax({
@@ -681,6 +736,54 @@ function getMatches(){
     });
 }
 
+
+function getModMatches(text){
+	console.log("Getting Mod Matches");
+	//console.log("search value: " + $('#addModName').val());
+	//console.log("operation: " + operation);
+    //$('.editdata').hide();
+    //$('#searchresults').empty();
+    $.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?find='+$('#addArtModule').val()+'&operation='+operation,
+	dataType: 'text',
+	success: processModResults,
+	error: function(){alert("Error: Something went wrong with getMatches");}
+    });
+}
+
+function getAssociateMatches(text){
+	console.log("Getting Associate Matches");
+	//console.log("search value: " + $('#addModName').val());
+	//console.log("operation: " + operation);
+    //$('.editdata').hide();
+    //$('#searchresults').empty();
+	console.log("operation: " + operation); 
+    $.ajax({
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?find='+$('#projsearch').val()+'&operation='+operation,
+	dataType: 'text',
+	success: processResults,
+	error: function(){alert("Error: Something went wrong with getMatches");}
+    });
+	
+}
+
+function processModResults(results){
+	var a = results.split("~@$");
+	var mods = []
+	$('#displayModsBox').show();
+	//console.log("Mod Results: " + a);
+	if($("#displayModsBox").children().length > 0){
+		$("#displayModsBox").empty()
+	}
+	for(var i=1; i<a.length; i+=2){
+		console.log("Mod" + a[i]);
+		$("#displayModsBox").append("<p id="+a[i+1]+" class=findModResults>"+a[i]+"</p>")
+		//mods.push(a[i])
+	}
+	//for(var j=0;j<mods.length;i++){
+	//	$("#displayModsBox").text(""+mods[i]+"")
+	//}
+}
 
 function addArtifact(){
     console.log("Attempting to add an entry");
@@ -695,20 +798,15 @@ function addArtifact(){
 	stock = $("#addArtStock").val()
 	mod = $("#addArtModule").val()
 	
-	
+	//document.getElementById('inputartform').innerHTML="Hello World";
 	console.log("name: "+$("#addArtName").val())
-	/*
-	$("#addArtDescription").reset()
-	$("#addArtName").reset()
-	$("#addArtStock").reset()
-	$("#addArtModule").reset()
-	*/
-	document.getElementById('inputartform').reset();
+	
+	//document.getElementById('inputartform').reset();
 	console.log("name: "+$("#addArtName").val())
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?aname='+encodeURIComponent(JSON.stringify(name))
-	+'&adescrip='+desc+
-	'&astock='+stock+
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?aname='+encode_to_URI(name)
+	+'&adescrip='+encode_to_URI(desc)+
+	'&astock='+encode_to_URI(stock)+
 	'&amodule='+mod+'&operation='+operation,
 	dataType: 'text',
 	success: processResults, 
@@ -729,7 +827,7 @@ function addModule(){
 	name = $("#addModName").val()
 	
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?amodname='+name
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?amodname='+(name)
     +'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
@@ -748,8 +846,8 @@ function addProject(){
 	var str = instructions.replace(/\n/g, '~~~1~~~');
 	console.log("instructions: "+$("#addProjInstructions").val())
     $.ajax({
-	url: '/cgi-bin/stantont_phoneAppComplete.cgi?aprojname='+name
-    +'&aprojinstructions='+str +
+	url: '/cgi-bin/stantont_phoneAppComplete.cgi?aprojname='+encode_to_URI(name)
+    +'&aprojinstructions='+encode_to_URI(str) +
 	'&operation='+operation,
 	dataType: 'text',
 	success: processResults,
@@ -781,7 +879,7 @@ function associateArtWithProj(){
 function disassociateFromProj(){
 	console.log("Attempting to disassociate art from project");
     //$('#searchresults').empty();
-	operation = "Disassociate Artifact From Project";
+	operation = "Disassociate Artifact From Activity";
     //disassociateID=$(this).attr('ID');
 	
 	//console.log("artID: " + disassociateID + " projID: " + projectEditID);
@@ -794,11 +892,22 @@ function disassociateFromProj(){
 	
 }
 
-function replaceAll(str, find, replace) {
-    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+function decode_from_URI(name){ //safer functino for decoding from SQL database
+	
+	name = decodeURIComponent(name);
+	
+	
+	name = name.replace(/\\/g,"");
+	
+	if(name[0] == "\"" && name[name.length - 1] == "\""){
+		name = name.slice(1, -1);
+	}
+	//console.log("\\");
+	return name;
+	
 }
 
-
-function escapeRegExp(str) {
-    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+function encode_to_URI(name){
+	return encodeURIComponent(JSON.stringify(name));	
 }
+
