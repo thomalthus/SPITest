@@ -1,0 +1,158 @@
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` FUNCTION `URLDECODER`(str VARCHAR(4096) CHARSET utf8) RETURNS varchar(4096) CHARSET latin1
+    DETERMINISTIC
+BEGIN
+               DECLARE X  INT;               
+               DECLARE chr VARCHAR(256);
+               DECLARE chrto VARCHAR(256);
+               DECLARE result VARCHAR(4096);
+               SET X = 1;
+               WHILE X  <= (SELECT MAX(id) FROM urlcodemap) DO
+                   SET chr = (SELECT `encoded` FROM urlcodemap WHERE id = X);
+                   SET chrto = (SELECT `decoded` FROM urlcodemap WHERE id = X);                
+                           SET str = REPLACE(str,chr,chrto);
+                           SET  X = X + 1;                           
+               END WHILE;
+               RETURN str;
+       END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `add_entry`(IN `namee` VARCHAR(1000), IN `descriptionn` VARCHAR(1000), IN `stockk` VARCHAR(100), IN `modulee` VARCHAR(100))
+    NO SQL
+INSERT INTO Artifacts(name, description, stock, module)
+	VALUES(URLDECODER(namee), URLDECODER(descriptionn), URLDECODER(stockk), modulee)$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `add_project`(IN `name` VARCHAR(1000), IN `instruction` VARCHAR(1000))
+    NO SQL
+INSERT INTO Projects(projectName, projectInstructions)
+	VALUES(URLDECODER(name), URLDECODER(instruction))$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `delete_ArtifactsProjects`(IN `artID` INT(11), IN `projID` INT(11))
+    NO SQL
+DELETE FROM ArtifactsProjects
+WHERE artifactID= artID AND projectID=projID$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `add_module`(IN `modu` VARCHAR(100))
+    NO SQL
+INSERT INTO StorageModules(moduleName)
+	VALUES(modu)$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `add_ArtifactsProjects`(IN `artifactID` INT(100), IN `projectID` INT(100))
+    NO SQL
+INSERT Into ArtifactsProjects(artifactID, projectID)
+VALUES (artifactID, projectID)$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `delete_artifact`(IN `idnum` VARCHAR(30))
+    NO SQL
+DELETE FROM Artifacts
+	Where artifactID=idnum$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `delete_module`(IN `idmod` VARCHAR(100))
+    NO SQL
+DELETE FROM StorageModules
+	WHERE modID=idmod$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `delete_project`(IN `ID` INT(100))
+    NO SQL
+DELETE FROM Projects
+	WHERE projectID=ID$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `display_by_project`(IN `projID` VARCHAR(100))
+    NO SQL
+SELECT projectName, projectInstructions, name, description, stock, module, ArtifactsProjects.artifactID, ArtifactsProjects.projectID FROM `ArtifactsProjects`,Projects,Artifacts WHERE `ArtifactsProjects`.`artifactID`= Artifacts.artifactID AND `ArtifactsProjects`.`projectID` = Projects.projectID AND `Projects`.`projectID` = projID$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `display_projects`()
+    NO SQL
+SELECT * FROM `ArtifactsProjects`,Projects,Artifacts WHERE `ArtifactsProjects`.`artifactID`=Artifacts.artifactID AND `ArtifactsProjects`.`projectID` = Projects.projectID$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `edit_entry`(IN `idnum` INT(11), IN `namee` VARCHAR(100), IN `descrip` VARCHAR(1000), IN `stockk` VARCHAR(100), IN `modu` VARCHAR(100))
+    NO SQL
+UPDATE Artifacts
+SET name=URLDECODER(namee), description=URLDECODER(descrip), stock=URLDECODER(stockk), module=modu
+Where artifactID=idnum$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `edit_module`(IN `modu` VARCHAR(100), IN `id` INT(100))
+    NO SQL
+UPDATE StorageModules
+SET moduleName=modu
+Where modID=id$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `edit_project`(IN `proj` VARCHAR(1000), IN `inst` VARCHAR(1000), IN `id` INT(11))
+    NO SQL
+UPDATE Projects
+SET projectName=URLDECODER(proj), projectInstructions=URLDECODER(inst)
+Where projectID=id$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `find_description`(IN `Descrip` VARCHAR(1000))
+    NO SQL
+SELECT name, description, stock, module, artifactID From Artifacts
+	WHERE description LIKE Descrip$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `find_module`(IN `modu` VARCHAR(100))
+    NO SQL
+Select moduleName, modID FROM StorageModules
+	WHERE moduleName LIKE modu$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `find_name`(IN `Namee` VARCHAR(1000))
+    NO SQL
+SELECT name, description, stock, module, artifactID From Artifacts
+	WHERE name LIKE Namee$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `find_project`(IN `proj` VARCHAR(1000))
+    NO SQL
+SELECT * From Projects
+	WHERE projectName LIKE proj$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `getPassword`()
+    NO SQL
+SELECT PasswordValue From Password$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `get_data`()
+    NO SQL
+SELECT name, description, stock, module FROM Artifacts$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`rachfal1`@`localhost` PROCEDURE `search_artifacts_by_module`(IN `modu` VARCHAR(100))
+    NO SQL
+SELECT name, description, stock, module, artifactID From Artifacts
+INNER JOIN StorageModules ON Artifacts.module=StorageModules.moduleName 
+WHERE StorageModules.modID LIKE modu$$
+DELIMITER ;
