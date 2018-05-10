@@ -46,7 +46,7 @@ public:
     void deleteArtifact(string artifactID);
 	void deleteProject(string projectID);
 	void deleteModule(string modID);
-
+	vector<ArtifactEntry> getPassword();
 	
 	
 	vector<ArtifactEntry> displayProjectInfo(string projectID);

@@ -10,7 +10,31 @@ string url_decode(string &SRC);
 EntryManager::EntryManager() {
 
 }
+vector<ArtifactEntry> EntryManager::getPassword(){
+	sql::Driver* driver = sql::mysql::get_driver_instance();
+	std::auto_ptr<sql::Connection> con(driver->connect(url, user, pass));
+	con->setSchema(database);
+	std::auto_ptr<sql::Statement> stmt(con->createStatement());	
+	
+	vector<ArtifactEntry> list;
+  
+	stmt->execute("CALL getPassword()");
+	
+	std::auto_ptr< sql::ResultSet > res;
+    do {
+      res.reset(stmt->getResultSet());
+      while (res->next()) {
 
+           ArtifactEntry entry(res->getString("PasswordValue"),"","","","");
+
+	  
+	  list.push_back(entry);
+
+      }
+    } while (stmt->getMoreResults());
+	
+    return list;
+}
 void EntryManager::associateArtWithProj(string artID, string projID){
 	
 	sql::Driver* driver = sql::mysql::get_driver_instance();
@@ -168,7 +192,8 @@ void EntryManager::addEntry(string name,string description,string stock, string 
   }
   */
   stmt->execute("CALL add_entry('"+name+"','"+description+"','"+stock+"','"+module+"')");
-}
+  //stmt->execute("CALL add_entry('"+name+"','"+description+"','"+stock+"','"+"space test"+"')");
+  }
 
 void EntryManager::addModule(string name){
     
@@ -242,17 +267,11 @@ vector<ArtifactEntry> EntryManager::displayProjectInfo(string projectID) {
 	  while (res->next()) {
 		
 		if(!instructionsAdded){	
-			ArtifactEntry projectInstructions(res->getString("projectInstructions"), "","","","");
+			ArtifactEntry projectInstructions(res->getString("projectInstructions"), res->getString("projectName"),"","","");
 			list.push_back(projectInstructions);	
 			instructionsAdded = true;
 		}
-		/*
-		if(!nameAdded){	
-			ArtifactEntry projectInstructions(res->getString("projectName"), "","","","");
-			list.push_back(projectInstructions);	
-			nameAdded = true;
-		}	
-		*/
+		
         ArtifactEntry entry(res->getString("name"),res->getString("description"),
 			   res->getString("stock"),res->getString("module"), res->getString("artifactID"));
 

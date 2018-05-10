@@ -16,27 +16,109 @@
     <link rel="stylesheet" type="text/css" href="SPIApp.css">
     
     <!-- Custom styles for this template -->
-  
+	
+	<script>
+	window.password_prompt = function(label_message, button_message, arg3, arg4, arg5) {
+
+    if (typeof label_message !== "string") var label_message = "Password:";
+    if (typeof button_message !== "string") var button_message = "Submit";
+    if (typeof arg3 === "function") {
+        var callback = arg3;
+    }
+    else if (typeof arg3 === "number" && typeof arg4 === "number" && typeof arg5 === "function") {
+        var width = arg3;
+        var height = arg4;
+        var callback = arg5;
+    }
+    if (typeof width !== "number") var width = 1900;
+    if (typeof height !== "number") var height = 1000;
+    if (typeof callback !== "function") var callback = function(password){};
+
+    var submit = function() {
+        callback(input.value);
+        document.body.removeChild(div);
+        window.removeEventListener("resize", resize, false);
+    };
+    var resize = function() {
+        div.style.left = ((window.innerWidth / 2) - (width / 2)) + "px";
+        div.style.top = ((window.innerHeight / 2) - (height / 2)) + "px";
+    };
+
+    var div = document.createElement("div");
+    div.id = "password_prompt";
+    div.style.background = "white";
+    div.style.color = "black";
+    div.style.border = "1px solid black";
+    div.style.width = width + "px";
+    div.style.height = height + "px";
+    div.style.padding = "16px";
+    div.style.position = "fixed";
+    div.style.left = ((window.innerWidth/1000) - (width/1000)) + "px";
+    div.style.top = ((window.innerHeight / 1000) - (height / 1000)) + "px";
+
+    var label = document.createElement("label");
+    label.id = "password_prompt_label";
+    label.innerHTML = label_message;
+    label.for = "password_prompt_input";
+    div.appendChild(label);
+
+    div.appendChild(document.createElement("br"));
+
+    var input = document.createElement("input");
+    input.id = "password_prompt_input";
+    input.type = "password";
+    input.addEventListener("keyup", function(e) {
+        if (event.keyCode == 13) submit();
+    }, false);
+    div.appendChild(input);
+
+    div.appendChild(document.createElement("br"));
+    div.appendChild(document.createElement("br"));
+
+    var button = document.createElement("button");
+    button.innerHTML = button_message;
+    button.addEventListener("click", submit, false);
+    div.appendChild(button);
+
+    document.body.appendChild(div);
+    window.addEventListener("resize", resize, false);
+	
+};
+	
+	</script>
   </head>
   
   <body>
-
+  
+  	
+	
+  	
+  	
+  
+  	
     <nav class="navbar navbar-default" >
     
       <div id = "top-container" class="container-fluid">
     	
     	
 	<!-- Brand and toggle get grouped for better mobile display -->
-	<div class="navbar-header">
+
+	<div class="navbar-header" id="nbh-labeler">
 	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 	    <span class="sr-only">Toggle navigation</span>
 	    <span class="icon-bar"></span>
 	    <span class="icon-bar"></span>
 	    <span class="icon-bar"></span>
+		
 	  </button>
+	 
 	  <!--a class="navbar-brand" href="https://www.spi-mountvernon.org/"><img src="http://www.spi-mountvernon.org/uploads/3/2/0/1/32019113/1479051627.png"></a-->
 	</div>
-    
+    <ul class="nav navbar-nav navbar-right">
+	    <li><a href="#">SPI Inventory</a></li>
+	    
+	  </ul>
+	
 	<!-- Collect the nav links, forms, and other content for toggling -->
 	
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -45,12 +127,12 @@
 	    <!--li class="active"><a href="https://www.spi-mountvernon.org/">SPI Homepage <span class="sr-only">(current)</span></a></li-->
 		
 		<li class="btn-group">
-		
-		
+		  <label for="searchtype"><u>Menu:</u></label>
 	      <a href="#" id="searchtype" class="dropdown-toggle selection" 
 		  data-toggle="dropdown" role="button" aria-haspopup="true" 
 		  aria-expanded="false">Find Item By Name<span class="caret"></span></a>
 	      <ul class="dropdown-menu" role="menu">
+		  
 		<li><a href="#">Find Item By Name</a></li>
 		<li><a href="#">Find Item By Description</a></li>
 		<li><a href="#">Find Storage Space</a></li>
@@ -80,6 +162,7 @@
 	  
 	</div>
 	<!-- /.navbar-collapse -->
+	
 	
 	
       </div><!-- /.container-fluid -->
@@ -142,7 +225,7 @@
 	  
 	  <div class="form-group">
 		<label for="addArtModule">Module</label>
-	    <textarea type="text" id="addArtModule" class="form-control" placeholder="Module"></textarea>
+	    <textarea type="text" id="addArtModule" class="form-control" placeholder="Storage Space"></textarea>
 
 	  </div>
 	 
@@ -235,7 +318,7 @@
 	  </div>
 	  <div class="form-group">
 		<label  for="editArtModule">Module</label>
-	    <textarea type="text" id="editArtModule" class="form-control" placeholder="Module"></textarea>
+	    <textarea type="text" id="editArtModule" class="form-control" placeholder="Storage Space"></textarea>
 	  </div>
 
 	  <button type="button" id="editart-btn" class="btn btn-default">Save</button>

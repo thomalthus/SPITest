@@ -181,7 +181,13 @@ int main() {
     }
 	
   }
-  
+  if(operation == "Get Password"){
+	//form_iterator searchString = cgi.getElement("fetchpw");
+    
+	amResults = am.getPassword();
+	 
+	output = amResults.at(0).name;  
+  }
 	
   if (operation == "Find Storage Space" || operation == "Find Available Mods") {
     form_iterator searchString = cgi.getElement("find");
@@ -216,7 +222,7 @@ int main() {
 	addname = url_encode(addname);
 	adddescrip = url_encode(adddescrip);
 	addstock= url_encode(addstock);
-	addmodule = url_encode(addmodule);
+	//addmodule = url_encode(addmodule);
     am.addEntry(addname,adddescrip,addstock,addmodule);
 
     output="success";
@@ -277,7 +283,7 @@ int main() {
 	if (amResults.size() > 0) {
 		
       output = "success";
-	  output += "~@$" + amResults.at(0).name;
+	  output += "~@$" + amResults.at(0).name + "~@$" + amResults.at(0).description;
       for (int i = 1; i<amResults.size(); i++) {
 	  output += "~@$" + amResults.at(i).name + "~@$"
 	  + amResults.at(i).description + "~@$"
